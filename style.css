@@ -1500,6 +1500,16 @@ a {
     }
 }
 
+.table-responsive-box,
+.dune-table-wrap,
+.screener-table-wrap,
+.table-responsive-dir {
+    width: 100%;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    max-width: 100% !important;
+}
+
 @media (max-width: 480px) {
     .lpg-brand-title {
         font-size: 19px;
