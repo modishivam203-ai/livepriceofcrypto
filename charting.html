@@ -287,7 +287,6 @@
             <a href="onchain.html" class="nav-tab">⛓️ On-Chain Analytics</a>
             <a href="defi.html" class="nav-tab">🏛️ DeFi & Protocol Metrics</a>
             <a href="directory.html" class="nav-tab">🪙 Token Directory</a>
-            <a href="index.html#sectionCalendar" class="nav-tab">📅 Economic Calendar</a>
         </div>
     </nav>
 
@@ -297,44 +296,17 @@
             
             <!-- Page Headline -->
             <section class="portal-heading-section">
-                <h2 class="portal-main-title">MARKET & TECHNICAL CHARTING</h2>
+                <h2 class="portal-main-title">altFINS AI TECHNICAL PATTERN SCREENER</h2>
                 <div class="portal-meta-row">
                     <span class="meta-calendar-icon">⚡</span>
-                    <span class="meta-updated-text">Powered by <strong>Institutional Pro Candlestick Station</strong> & <strong>altFINS Pattern Screener</strong></span>
+                    <span class="meta-updated-text">Powered by <strong>altFINS Algorithmic Engine & Binance 2,000+ Pairs Stream</strong></span>
                 </div>
                 <p class="portal-desc-text">
-                    Professional grade charting with multi-timeframe candlestick indicators, moving averages, RSI/MACD studies, strategy backtesting, and automated real-time algorithmic detection scanning all cryptocurrency pairs.
+                    Real-time automated scanning across all cryptocurrency pairs. AI-detected chart patterns including Breakouts, RSI Support Retests, Golden Crosses, and Volume Momentum Surges with calculated target prices and stop losses.
                 </p>
             </section>
 
-            <!-- 1. INSTITUTIONAL ADVANCED PRO CHARTING STATION -->
-            <section class="charting-station-wrap">
-                <div class="section-header-row">
-                    <div>
-                        <h3 class="section-heading-text">Institutional Interactive Chart Station</h3>
-                        <p class="section-heading-sub">Multi-timeframe candlestick execution, Fibonacci retracements, Bollinger Bands, and real-time live market depth.</p>
-                    </div>
-                </div>
-
-                <!-- Quick Coin Pair Switcher Chips -->
-                <div class="chart-coin-selector-bar" id="chartPairChips">
-                    <button class="coin-chip active" data-symbol="BINANCE:BTCUSDT">BTC/USDT</button>
-                    <button class="coin-chip" data-symbol="BINANCE:ETHUSDT">ETH/USDT</button>
-                    <button class="coin-chip" data-symbol="BINANCE:SOLUSDT">SOL/USDT</button>
-                    <button class="coin-chip" data-symbol="BINANCE:BNBUSDT">BNB/USDT</button>
-                    <button class="coin-chip" data-symbol="BINANCE:XRPUSDT">XRP/USDT</button>
-                    <button class="coin-chip" data-symbol="BINANCE:DOGEUSDT">DOGE/USDT</button>
-                    <button class="coin-chip" data-symbol="BINANCE:SUIUSDT">SUI/USDT</button>
-                    <button class="coin-chip" data-symbol="BINANCE:NEARUSDT">NEAR/USDT</button>
-                </div>
-
-                <!-- Chart Embed Container -->
-                <div class="pro-chart-container-box" id="tradingviewWidgetContainer">
-                    <!-- Embedded via JavaScript -->
-                </div>
-            </section>
-
-            <!-- 2. altFINS AI CHART PATTERN & TECHNICAL SCREENER -->
+            <!-- altFINS AI CHART PATTERN & TECHNICAL SCREENER -->
             <section class="charting-station-wrap" id="altfinsScreenerSection">
                 <div class="section-header-row">
                     <div>
@@ -470,48 +442,7 @@
 
     <script src="script.js"></script>
     <script>
-        // Pro Chart Embed Script & Dynamic altFINS Screener Logic (No TradingView branding text)
-        let currentChartSymbol = 'BINANCE:BTCUSDT';
-
-        function loadProChart(symbol) {
-            const container = document.getElementById('tradingviewWidgetContainer');
-            if (!container) return;
-            container.innerHTML = '';
-
-            const widgetDiv = document.createElement('div');
-            widgetDiv.className = 'tradingview-widget-container__widget';
-            widgetDiv.style.width = '100%';
-            widgetDiv.style.height = '100%';
-            container.appendChild(widgetDiv);
-
-            const script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-            script.async = true;
-            script.innerHTML = JSON.stringify({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "D",
-                "timezone": "Etc/UTC",
-                "theme": "light",
-                "style": "1",
-                "locale": "en",
-                "enable_publishing": false,
-                "backgroundColor": "#ffffff",
-                "gridColor": "rgba(226, 232, 240, 0.6)",
-                "hide_side_toolbar": false,
-                "allow_symbol_change": true,
-                "details": true,
-                "hotlist": false,
-                "calendar": false,
-                "studies": [
-                    "RSI@tv-basicstudies",
-                    "MASimple@tv-basicstudies",
-                    "MACD@tv-basicstudies"
-                ]
-            });
-            container.appendChild(script);
-        }
+        // Dynamic altFINS Screener Logic (Scanning all 2,000+ Binance Live Pairs)
 
         // Live Dynamic Screener Dataset: Loaded from Binance REST API for all real pairs
         let liveScreenerData = [];
@@ -656,36 +587,19 @@
                     <td style="font-family:var(--font-mono); color:var(--green); font-weight:700;">${item.target}</td>
                     <td style="font-family:var(--font-mono); color:var(--red); font-weight:600;">${item.stop}</td>
                     <td>
-                        <button class="btn-inspect-chart" onclick="switchChartTo('${item.tvSym}')">Inspect ↗</button>
+                        <button class="btn-inspect-chart" onclick="openChartModalBySymbol('${item.symbol.toLowerCase()}')">Analyze ↗</button>
                     </td>
                 </tr>
                 `;
             }).join('');
         }
 
-        window.switchChartTo = function(symbol) {
-            currentChartSymbol = symbol;
-            loadProChart(symbol);
-            document.querySelectorAll('.coin-chip').forEach(chip => {
-                chip.classList.toggle('active', chip.dataset.symbol === symbol);
-            });
-            window.scrollTo({ top: document.querySelector('.charting-station-wrap').offsetTop - 60, behavior: 'smooth' });
-        };
-
         document.addEventListener('DOMContentLoaded', () => {
-            loadProChart(currentChartSymbol);
             fetchAllLiveMarketPairs();
+            // Continuous live refresh every 3 seconds so screener is ALWAYS live
+            setInterval(fetchAllLiveMarketPairs, 3000);
 
             window.onCoinsUpdated = renderScreenerTable;
-
-            // Coin chip listeners
-            document.querySelectorAll('.coin-chip').forEach(chip => {
-                chip.addEventListener('click', () => {
-                    document.querySelectorAll('.coin-chip').forEach(c => c.classList.remove('active'));
-                    chip.classList.add('active');
-                    loadProChart(chip.dataset.symbol);
-                });
-            });
 
             // Screener tab filters
             document.querySelectorAll('.screener-tab').forEach(tab => {
