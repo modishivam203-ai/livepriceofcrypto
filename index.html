@@ -3,141 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LivePriceOfCrypto.com | Real-Time Prices, Forex Factory Calendar & Google News</title>
-    <meta name="description" content="Forex Factory style cryptocurrency platform: 1-second live streaming prices, Top 5 Gainers/Losers, Top 10/100 assets, daily economic calendar, and live Google News.">
-    <meta name="keywords" content="crypto prices, forex factory, live crypto, bitcoin price, top gainers, economic calendar, google crypto news">
+    <title>Live Price of Crypto | Real-Time Cryptocurrency Prices, News & Economic Calendar</title>
+    <meta name="description" content="Track live cryptocurrency prices, spot rates for Bitcoin and Ethereum, top gainers and losers, macroeconomic news affecting crypto, and daily economic calendar.">
+    <meta name="keywords" content="crypto prices, live crypto, bitcoin spot price, ethereum price, economic calendar, crypto market news, top gainers">
     <link rel="canonical" href="https://livepriceofcrypto.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
 </head>
-<body data-theme="ff-dark">
+<body data-theme="gold-dark">
 
-    <!-- Top Forex Factory Style Bar -->
-    <div class="ff-topbar">
-        <div class="container ff-topbar-inner">
-            <div class="ff-topbar-left">
-                <span class="ff-badge-live"><span class="pulse-dot"></span> LIVE 1S STREAM</span>
-                <span class="ff-clock" id="ffClock">00:00:00 GMT</span>
+    <!-- Top Financial Metrics Bar -->
+    <div class="top-market-bar">
+        <div class="container top-market-inner">
+            <div class="top-market-left">
+                <span class="market-status-dot">●</span>
+                <span class="market-status-text">LIVE MARKET TICKER</span>
+                <span class="market-clock" id="liveClock">00:00:00 UTC</span>
             </div>
-            <div class="ff-market-metrics" id="globalStats">
+            <div class="top-market-metrics" id="globalStats">
                 <span>Cryptos: <strong id="totalCryptos">--</strong></span>
                 <span>Market Cap: <strong id="totalMarketCap">--</strong></span>
-                <span>24h Vol: <strong id="totalVolume">--</strong></span>
-                <span>BTC Dom: <strong id="btcDominance">--</strong></span>
+                <span>24h Volume: <strong id="totalVolume">--</strong></span>
+                <span>BTC Dominance: <strong id="btcDominance">--</strong></span>
             </div>
-            <div class="ff-topbar-right">
-                <button class="ff-theme-btn" id="themeToggle" title="Toggle Light/Dark Theme">
-                    <span id="themeBtnText">☀️ Light</span>
+            <div class="top-market-right">
+                <button class="theme-toggle-btn" id="themeToggle" title="Toggle Light / Dark Mode">
+                    <span id="themeBtnIcon">☀️ Light</span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Navigation Header -->
-    <header class="ff-header">
-        <div class="container ff-header-inner">
-            <div class="ff-logo">
-                <div class="ff-logo-icon">FF</div>
-                <div>
-                    <h1 class="ff-logo-text">LivePriceOfCrypto<span class="ff-logo-sub">.com</span></h1>
-                    <span class="ff-logo-tag">Forex Factory Edition • Real-Time Crypto & Economic Intelligence</span>
-                </div>
+    <!-- Main Navigation Header (livepriceofgold.com Style) -->
+    <header class="main-header">
+        <div class="container header-inner">
+            <div class="site-branding">
+                <a href="index.html" class="brand-link">
+                    <div class="brand-icon">LC</div>
+                    <div>
+                        <h1 class="brand-name">LivePriceOfCrypto<span class="brand-tld">.com</span></h1>
+                        <span class="brand-sub">Real-Time Cryptocurrency Valuations & Financial Intelligence</span>
+                    </div>
+                </a>
             </div>
-            <nav class="ff-nav">
-                <a href="#sectionMajor" class="ff-nav-link active">Top 5 Majors</a>
-                <a href="#sectionGainersLosers" class="ff-nav-link">Gainers & Losers</a>
-                <a href="#sectionPrices" class="ff-nav-link">Live Table (Top 100)</a>
-                <a href="#sectionNews" class="ff-nav-link">Google News Live</a>
-                <a href="#sectionCalendar" class="ff-nav-link">Economic Calendar</a>
+            <nav class="header-nav">
+                <a href="#sectionSpot" class="nav-link active">Spot Rates</a>
+                <a href="#sectionGainersLosers" class="nav-link">Gainers & Losers</a>
+                <a href="#sectionPrices" class="nav-link">Market Board</a>
+                <a href="#sectionNews" class="nav-link">Market News</a>
+                <a href="#sectionCalendar" class="nav-link">Economic Calendar</a>
             </nav>
         </div>
     </header>
 
-    <!-- Retro Ticker Tape Bar -->
-    <div class="ff-ticker-bar">
-        <div class="ff-ticker-badge">TICKER 1S</div>
-        <div class="ff-ticker-track" id="tickerWrap">
+    <!-- Continuous Scrolling Ticker Tape -->
+    <div class="market-ticker-tape">
+        <div class="ticker-tape-tag">SPOT TICKER</div>
+        <div class="ticker-tape-track" id="tickerWrap">
             <div class="ticker" id="ticker"></div>
         </div>
     </div>
 
-    <!-- Main Container -->
-    <main class="container ff-main">
+    <!-- Main Content Area -->
+    <main class="container page-content">
 
-        <!-- 1. TOP 5 MAJOR CRYPTOCURRENCIES HIGHLIGHT CARDS -->
-        <section class="ff-section" id="sectionMajor">
-            <div class="ff-section-head">
-                <div class="ff-section-title">
-                    <span class="ff-sub-label">KEY MARKET BENCHMARKS</span>
-                    <h2>Top 5 Major Cryptos (Real-Time 1s Stream)</h2>
+        <!-- 1. SPOT CRYPTO RATES (Top 5 Majors Highlighted - Bitcoin, Ethereum, Solana, BNB, XRP) -->
+        <section class="market-section" id="sectionSpot">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-category">SPOT VALUATIONS</span>
+                    <h2 class="section-title-text">Major Cryptocurrency Spot Prices</h2>
                 </div>
-                <div class="ff-live-pill">
-                    <span class="pulse-dot green"></span> Direct Binance WebSocket
-                </div>
-            </div>
-
-            <div class="ff-majors-grid" id="majorCoinsGrid">
-                <!-- 5 Highlight Cards Generated dynamically for BTC, ETH, SOL, BNB, XRP -->
-                <div class="ff-card ff-major-skeleton"><div class="spinner"></div></div>
-                <div class="ff-card ff-major-skeleton"><div class="spinner"></div></div>
-                <div class="ff-card ff-major-skeleton"><div class="spinner"></div></div>
-                <div class="ff-card ff-major-skeleton"><div class="spinner"></div></div>
-                <div class="ff-card ff-major-skeleton"><div class="spinner"></div></div>
-            </div>
-        </section>
-
-        <!-- 2. TOP 5 GAINERS & TOP 5 LOSERS (24H) -->
-        <section class="ff-section" id="sectionGainersLosers">
-            <div class="ff-section-head">
-                <div class="ff-section-title">
-                    <span class="ff-sub-label">24-HOUR MOMENTUM BOARD</span>
-                    <h2>Top 5 Gainers & Top 5 Losers</h2>
-                </div>
-            </div>
-
-            <div class="ff-gl-container">
-                <!-- Top 5 Gainers Box -->
-                <div class="ff-gl-box gainers-box">
-                    <div class="ff-gl-head gainers-head">
-                        <span class="gl-icon">🚀</span>
-                        <h3>Top 5 Gainers (24h)</h3>
-                        <span class="gl-tag green">BULLISH</span>
-                    </div>
-                    <div class="ff-gl-list" id="gainersList">
-                        <div class="loading"><div class="spinner"></div></div>
-                    </div>
-                </div>
-
-                <!-- Top 5 Losers Box -->
-                <div class="ff-gl-box losers-box">
-                    <div class="ff-gl-head losers-head">
-                        <span class="gl-icon">🔻</span>
-                        <h3>Top 5 Losers (24h)</h3>
-                        <span class="gl-tag red">BEARISH</span>
-                    </div>
-                    <div class="ff-gl-list" id="losersList">
-                        <div class="loading"><div class="spinner"></div></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 3. MAIN LIVE PRICES TABLE: TOP 10 DEFAULT + SHOW MORE (TOP 100) BUTTON -->
-        <section class="ff-section" id="sectionPrices">
-            <div class="ff-section-head">
-                <div class="ff-section-title">
-                    <span class="ff-sub-label">VALUATION INDEX</span>
-                    <h2>Cryptocurrency Market Board (<span id="tableCountBadge">Top 10 Assets</span>)</h2>
-                </div>
-                <div class="ff-controls">
-                    <div class="ff-search">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-                        <input type="text" id="searchInput" placeholder="Search (BTC, ETH, SOL)..." autocomplete="off">
-                    </div>
-                    <select id="currencySelect" class="ff-select">
+                <div class="currency-selector-wrap">
+                    <label for="currencySelect" class="currency-label">Currency:</label>
+                    <select id="currencySelect" class="form-select">
                         <option value="usd">USD ($)</option>
                         <option value="inr">INR (₹)</option>
                         <option value="eur">EUR (€)</option>
@@ -148,14 +90,75 @@
                 </div>
             </div>
 
-            <!-- Table -->
-            <div class="ff-table-wrap">
-                <table class="ff-table" id="priceTable">
+            <!-- Top 5 Highlight Spot Cards -->
+            <div class="spot-cards-grid" id="majorCoinsGrid">
+                <div class="spot-card-skeleton"><div class="spinner"></div></div>
+                <div class="spot-card-skeleton"><div class="spinner"></div></div>
+                <div class="spot-card-skeleton"><div class="spinner"></div></div>
+                <div class="spot-card-skeleton"><div class="spinner"></div></div>
+                <div class="spot-card-skeleton"><div class="spinner"></div></div>
+            </div>
+        </section>
+
+        <!-- 2. TOP 5 GAINERS & TOP 5 LOSERS (24H MOMENTUM) -->
+        <section class="market-section" id="sectionGainersLosers">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-category">MARKET MOMENTUM</span>
+                    <h2 class="section-title-text">Top Gainers & Losers (24h)</h2>
+                </div>
+            </div>
+
+            <div class="gainers-losers-layout">
+                <!-- Gainers Box -->
+                <div class="momentum-box gainers-card">
+                    <div class="momentum-header gainers-header">
+                        <span class="momentum-icon">▲</span>
+                        <h3>Top 5 Gainers</h3>
+                        <span class="trend-badge bullish">BULLISH</span>
+                    </div>
+                    <div class="momentum-list" id="gainersList">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+
+                <!-- Losers Box -->
+                <div class="momentum-box losers-card">
+                    <div class="momentum-header losers-header">
+                        <span class="momentum-icon">▼</span>
+                        <h3>Top 5 Losers</h3>
+                        <span class="trend-badge bearish">BEARISH</span>
+                    </div>
+                    <div class="momentum-list" id="losersList">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. CRYPTOCURRENCY MARKET BOARD (Top 10 Default + Show More Button) -->
+        <section class="market-section" id="sectionPrices">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-category">VALUATION INDEX</span>
+                    <h2 class="section-title-text">Cryptocurrency Valuation Board (<span id="tableCountBadge">Top 10 Assets</span>)</h2>
+                </div>
+                <div class="search-filter-wrap">
+                    <div class="table-search-input">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        <input type="text" id="searchInput" placeholder="Search asset name or symbol..." autocomplete="off">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="data-table-container">
+                <table class="market-data-table" id="priceTable">
                     <thead>
                         <tr>
-                            <th class="th-rank sortable" data-sort="market_cap_rank">#</th>
-                            <th class="th-coin sortable" data-sort="name">Coin / Asset</th>
-                            <th class="th-price sortable" data-sort="current_price">Price (Live 1s)</th>
+                            <th class="th-rank sortable" data-sort="market_cap_rank">Rank</th>
+                            <th class="th-coin sortable" data-sort="name">Asset</th>
+                            <th class="th-price sortable" data-sort="current_price">Price</th>
                             <th class="th-change sortable" data-sort="price_change_percentage_1h_in_currency">1h %</th>
                             <th class="th-change sortable" data-sort="price_change_percentage_24h">24h %</th>
                             <th class="th-change sortable" data-sort="price_change_percentage_7d_in_currency">7d %</th>
@@ -171,62 +174,62 @@
 
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Loading real-time market data...</p>
+                <p>Syncing market data...</p>
             </div>
 
             <div class="error-state" id="errorState" style="display:none;">
-                <p>Connection interrupted. Re-syncing price stream...</p>
-                <button class="ff-btn" onclick="fetchData()">Retry Reconnect</button>
+                <p>Connection interrupted. Re-syncing price feeds...</p>
+                <button class="btn-primary" onclick="fetchLivePrices()">Reconnect Now</button>
             </div>
 
-            <!-- "Show More / Top 100" Expansion Button -->
-            <div class="ff-expand-bar">
-                <button class="ff-btn-expand" id="btnToggleExpand">
+            <!-- Expand / Show More Button -->
+            <div class="table-expand-bar">
+                <button class="btn-expand-table" id="btnToggleExpand">
                     <span id="expandBtnIcon">▼</span>
-                    <span id="expandBtnText">Show More (Expand to Top 100 Cryptos)</span>
+                    <span id="expandBtnText">Show More (Expand to Top 100 Assets)</span>
                 </button>
             </div>
         </section>
 
-        <!-- 4. LIVE GOOGLE NEWS DISPATCHES (AUTOMATIC GOOGLE RSS LIVE API) -->
-        <section class="ff-section" id="sectionNews">
-            <div class="ff-section-head">
-                <div class="ff-section-title">
-                    <span class="ff-sub-label">DIRECT GOOGLE LIVE WIRE</span>
-                    <h2>Cryptocurrency Breaking News (Google News Live API)</h2>
-                    <p class="ff-section-sub">Direct real-time syndicated dispatches from Google News, CoinDesk, Bloomberg & Reuters. Auto-refreshes every 60s.</p>
+        <!-- 4. MACRO & MARKET NEWS (Images on Every Card + Internal Article Page Redirect) -->
+        <section class="market-section" id="sectionNews">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-category">MARKET INTELLIGENCE</span>
+                    <h2 class="section-title-text">Macroeconomic & Cryptocurrency News</h2>
+                    <p class="section-subtitle">Real-time reports on global interest rates, inflation data, regulations, and market liquidity affecting digital assets.</p>
                 </div>
-                <div class="ff-news-actions">
-                    <span class="ff-timer-badge">Sync: <strong id="newsTimer">60s</strong></span>
-                    <button class="ff-btn-sm" id="btnRefreshNews">↻ Refresh Google News</button>
+                <div class="news-refresh-box">
+                    <span class="refresh-countdown">Sync: <strong id="newsTimer">60s</strong></span>
+                    <button class="btn-secondary-sm" id="btnRefreshNews">↻ Refresh News</button>
                 </div>
             </div>
 
-            <!-- Google News Grid -->
-            <div class="ff-news-grid" id="googleNewsGrid">
+            <!-- News Grid: Cards with Images & In-Site Article Redirects -->
+            <div class="market-news-grid" id="googleNewsGrid">
                 <div class="loading" style="grid-column: 1 / -1;">
                     <div class="spinner"></div>
-                    <p>Fetching real-time Google Crypto News dispatches...</p>
+                    <p>Loading real-time market dispatches...</p>
                 </div>
             </div>
         </section>
 
-        <!-- 5. FOREX FACTORY STYLE ECONOMIC CALENDAR -->
-        <section class="ff-section" id="sectionCalendar">
-            <div class="ff-section-head">
-                <div class="ff-section-title">
-                    <span class="ff-sub-label">MACROECONOMIC SCHEDULE</span>
-                    <h2>Forex Factory Style Daily Economic Calendar</h2>
-                    <p class="ff-section-sub">Real-time daily schedule of central bank interest rates, CPI inflation reports, FOMC, and GDP releases.</p>
+        <!-- 5. ECONOMIC CALENDAR -->
+        <section class="market-section" id="sectionCalendar">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-category">GLOBAL SCHEDULE</span>
+                    <h2 class="section-title-text">Daily Economic Calendar</h2>
+                    <p class="section-subtitle">Scheduled announcements for central bank interest rates, CPI inflation, Non-Farm Payrolls, and gross domestic product reports.</p>
                 </div>
-                <div class="ff-legend">
-                    <span class="ff-impact-pill red"><span class="dot red"></span> High Impact</span>
-                    <span class="ff-impact-pill orange"><span class="dot orange"></span> Medium Impact</span>
-                    <span class="ff-impact-pill yellow"><span class="dot yellow"></span> Low Impact</span>
+                <div class="impact-legend-wrap">
+                    <span class="impact-tag red"><span class="dot red"></span> High Impact</span>
+                    <span class="impact-tag orange"><span class="dot orange"></span> Medium Impact</span>
+                    <span class="impact-tag yellow"><span class="dot yellow"></span> Low Impact</span>
                 </div>
             </div>
 
-            <div class="ff-calendar-card">
+            <div class="economic-calendar-card">
                 <div class="tradingview-widget-container" id="economicCalendarWidget">
                     <div class="tradingview-widget-container__widget" style="width: 100%; height: 750px;"></div>
                 </div>
@@ -237,28 +240,28 @@
 
     <!-- Coin Detail Modal -->
     <div class="modal-overlay" id="modalOverlay">
-        <div class="modal ff-modal" id="coinModal">
+        <div class="modal market-modal" id="coinModal">
             <button class="modal-close" id="modalClose">&times;</button>
             <div class="modal-content" id="modalContent"></div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="ff-footer">
-        <div class="container ff-footer-inner">
-            <div>
-                <h4 class="ff-footer-logo">LivePriceOfCrypto.com</h4>
-                <p>Forex Factory Style Cryptocurrency Platform • Real-time 1s Binance WebSocket • Google News Wire • Economic Calendar</p>
+    <!-- Main Footer (livepriceofgold.com Style) -->
+    <footer class="main-footer">
+        <div class="container footer-inner">
+            <div class="footer-info">
+                <h4 class="footer-brand">LivePriceOfCrypto.com</h4>
+                <p>Independent real-time cryptocurrency valuation index, daily economic calendar, and financial market intelligence.</p>
             </div>
-            <div class="ff-footer-meta">
-                <p>Broadcast Feed: <strong style="color:var(--green)">● Connected (1s)</strong></p>
-                <p>Data Providers: Binance WebSocket, CoinGecko & Google News RSS</p>
-                <p class="ff-disclaimer">Informational purposes only. Not financial advice.</p>
+            <div class="footer-meta">
+                <p>Spot Broadcast: <strong style="color:var(--green)">● Connected</strong></p>
+                <p>Data Partners: Global Crypto Exchanges & Financial News Feeds</p>
+                <p class="footer-disclaimer">Disclaimer: All rates and market data provided for informational purposes only. Not financial advice.</p>
             </div>
         </div>
     </footer>
 
-    <!-- Back to top -->
+    <!-- Back to top button -->
     <button class="back-to-top" id="backToTop" title="Return to Top">▲</button>
 
     <script src="script.js"></script>

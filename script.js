@@ -1,24 +1,39 @@
 /* ========================================================
-   LivePriceOfCrypto.com — Bulletproof Engine
-   - Instant Fallback & Zero-Rate-Limit Architecture
-   - Binance REST & 1s WebSocket Stream (Never Blocks)
-   - Real-Time Google News RSS & CoinTelegraph Fallback
-   - Top 5 Majors, Top 5 Gainers/Losers, Top 10/100 Table
-   - Forex Factory Style Daily Economic Calendar
+   LivePriceOfCrypto.com — LivePriceOfGold.com Style Engine
+   - 1-Second Real-Time WebSocket & Zero-Lag Seed Data
+   - Spot Rates for Top 5 Major Cryptos (BTC, ETH, SOL, BNB, XRP)
+   - Top 5 Gainers & Top 5 Losers (24h Momentum)
+   - Valuation Board: Top 10 by Default + Show More (Top 100)
+   - Macroeconomic & Crypto News Feed with Images & In-Site Article Reader
+   - Daily Economic Calendar
    ======================================================== */
 
 // ─── Configuration ───
 const BINANCE_REST_API = 'https://api.binance.com/api/v3/ticker/24hr';
 const BINANCE_WS_URL = 'wss://stream.binance.com:9443/ws/!miniTicker@arr';
 const COINGECKO_API = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=1h,24h,7d';
-const GOOGLE_NEWS_API = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.google.com%2Frss%2Fsearch%3Fq%3Dcrypto%2Bbitcoin';
+const MACRO_NEWS_API = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.google.com%2Frss%2Fsearch%3Fq%3Dcrypto%2Bbitcoin%2Bfed%2Binflation%2Bmarkets';
 const COINTELEGRAPH_API = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fcointelegraph.com%2Frss';
 const NEWS_REFRESH_INTERVAL = 60; // seconds
 
-// ─── Built-In Bulletproof Baseline Dataset (Loads in 0.001s) ───
+// ─── Curated High-Definition Macro & Crypto Topic Images ───
+const NEWS_IMAGES = [
+    'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=700&auto=format&fit=crop&q=80', // Bitcoin physical coin
+    'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=700&auto=format&fit=crop&q=80', // Financial chart & trading screen
+    'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=700&auto=format&fit=crop&q=80', // Stock market green/red candlestick
+    'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=700&auto=format&fit=crop&q=80', // Federal Reserve / US Dollar cash
+    'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=700&auto=format&fit=crop&q=80', // Ethereum blockchain node
+    'https://images.unsplash.com/photo-1622979135225-d2ba269bc1df?w=700&auto=format&fit=crop&q=80', // Digital currency globe & network
+    'https://images.unsplash.com/photo-1565514020179-026b92b84bb6?w=700&auto=format&fit=crop&q=80', // Wall Street bull / exchange building
+    'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?w=700&auto=format&fit=crop&q=80', // Solana & altcoins network
+    'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=700&auto=format&fit=crop&q=80', // Central bank / inflation gold
+    'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=700&auto=format&fit=crop&q=80'  // Financial data analytics dashboard
+];
+
+// ─── Initial Baseline Dataset (Instant 0.001s Render) ───
 const INITIAL_COINS = [
-    { id: 'bitcoin', symbol: 'btc', name: 'Bitcoin', market_cap_rank: 1, current_price: 74780, price_change_percentage_24h: 1.45, price_change_percentage_1h_in_currency: 0.12, price_change_percentage_7d_in_currency: 3.8, total_volume: 38500000000, market_cap: 1470000000000, high_24h: 75200, low_24h: 73600, image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png' },
-    { id: 'ethereum', symbol: 'eth', name: 'Ethereum', market_cap_rank: 2, current_price: 2840, price_change_percentage_24h: 2.15, price_change_percentage_1h_in_currency: -0.05, price_change_percentage_7d_in_currency: 5.2, total_volume: 19500000000, market_cap: 342000000000, high_24h: 2890, low_24h: 2760, image: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png' },
+    { id: 'bitcoin', symbol: 'btc', name: 'Bitcoin', market_cap_rank: 1, current_price: 74850, price_change_percentage_24h: 1.45, price_change_percentage_1h_in_currency: 0.12, price_change_percentage_7d_in_currency: 3.8, total_volume: 38500000000, market_cap: 1475000000000, high_24h: 75250, low_24h: 73600, image: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png' },
+    { id: 'ethereum', symbol: 'eth', name: 'Ethereum', market_cap_rank: 2, current_price: 2845, price_change_percentage_24h: 2.15, price_change_percentage_1h_in_currency: -0.05, price_change_percentage_7d_in_currency: 5.2, total_volume: 19500000000, market_cap: 342000000000, high_24h: 2890, low_24h: 2760, image: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png' },
     { id: 'solana', symbol: 'sol', name: 'Solana', market_cap_rank: 3, current_price: 188.50, price_change_percentage_24h: 4.85, price_change_percentage_1h_in_currency: 0.45, price_change_percentage_7d_in_currency: 12.4, total_volume: 6800000000, market_cap: 89000000000, high_24h: 194.00, low_24h: 178.50, image: 'https://assets.coingecko.com/coins/images/4128/large/solana.png' },
     { id: 'binancecoin', symbol: 'bnb', name: 'BNB', market_cap_rank: 4, current_price: 595.20, price_change_percentage_24h: -0.65, price_change_percentage_1h_in_currency: 0.10, price_change_percentage_7d_in_currency: 1.8, total_volume: 1200000000, market_cap: 86500000000, high_24h: 608.00, low_24h: 588.00, image: 'https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png' },
     { id: 'ripple', symbol: 'xrp', name: 'XRP', market_cap_rank: 5, current_price: 0.584, price_change_percentage_24h: 3.40, price_change_percentage_1h_in_currency: 0.22, price_change_percentage_7d_in_currency: 6.1, total_volume: 2400000000, market_cap: 33200000000, high_24h: 0.602, low_24h: 0.565, image: 'https://assets.coingecko.com/coins/images/44/large/xrp-symbol-white-128.png' },
@@ -50,6 +65,7 @@ let wsSocket = null;
 let newsCountdown = NEWS_REFRESH_INTERVAL;
 let newsTimerInterval = null;
 let calendarWidgetLoaded = false;
+let currentNewsArticles = [];
 
 // ─── Currency Symbols ───
 const currencySymbols = {
@@ -77,11 +93,11 @@ const expandBtnIcon = document.getElementById('expandBtnIcon');
 const tableCountBadge = document.getElementById('tableCountBadge');
 const backToTop = document.getElementById('backToTop');
 const themeToggle = document.getElementById('themeToggle');
-const themeBtnText = document.getElementById('themeBtnText');
+const themeBtnIcon = document.getElementById('themeBtnIcon');
 const modalOverlay = document.getElementById('modalOverlay');
 const modalClose = document.getElementById('modalClose');
 const modalContent = document.getElementById('modalContent');
-const ffClock = document.getElementById('ffClock');
+const liveClock = document.getElementById('liveClock');
 
 // ─── Initialization ───
 document.addEventListener('DOMContentLoaded', () => {
@@ -89,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
     startClock();
 
-    // 1. Render immediately from baseline dataset (Zero lag, instant display!)
+    // 1. Instant Render from Baseline Dataset
     renderInitialData();
 
     // 2. Fetch fresh prices from Binance REST & background CoinGecko
@@ -98,11 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Connect real-time 1s WebSocket stream
     initBinanceWebSocket();
 
-    // 4. Fetch Google News & CoinTelegraph fallback
-    fetchGoogleNews();
+    // 4. Fetch Macro & Crypto Market News (with Images)
+    fetchMacroNews();
     startNewsTimer();
 
-    // 5. Load Forex Factory style Economic Calendar
+    // 5. Load Economic Calendar
     loadEconomicCalendarWidget();
 });
 
@@ -111,32 +127,33 @@ function renderInitialData() {
     renderGainersAndLosers(allCoins);
     sortAndRender();
     updateTicker(allCoins.slice(0, 15));
+    updateSidebarRates();
     if (loading) loading.style.display = 'none';
 }
 
-// ─── Real-Time GMT Clock ───
+// ─── Real-Time Clock ───
 function startClock() {
     setInterval(() => {
-        if (ffClock) {
+        if (liveClock) {
             const now = new Date();
-            ffClock.textContent = now.toUTCString().replace('GMT', 'UTC').split(' ').slice(4, 6).join(' ');
+            liveClock.textContent = now.toUTCString().replace('GMT', 'UTC').split(' ').slice(4, 6).join(' ');
         }
     }, 1000);
 }
 
-// ─── Theme Management ───
+// ─── Theme Management (livepriceofgold.com Palette) ───
 function initTheme() {
-    const saved = localStorage.getItem('theme') || 'ff-dark';
+    const saved = localStorage.getItem('theme') || 'gold-dark';
     document.body.setAttribute('data-theme', saved);
-    updateThemeBtn(saved);
+    updateThemeButton(saved);
 }
 
 function toggleTheme() {
-    const current = document.body.getAttribute('data-theme') || 'ff-dark';
-    const next = current === 'ff-dark' ? 'ff-light' : 'ff-dark';
+    const current = document.body.getAttribute('data-theme') || 'gold-dark';
+    const next = current === 'gold-dark' ? 'gold-light' : 'gold-dark';
     document.body.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-    updateThemeBtn(next);
+    updateThemeButton(next);
 
     calendarWidgetLoaded = false;
     const container = document.getElementById('economicCalendarWidget');
@@ -146,38 +163,46 @@ function toggleTheme() {
     }
 }
 
-function updateThemeBtn(theme) {
-    if (themeBtnText) {
-        themeBtnText.textContent = theme === 'ff-dark' ? '☀️ Light' : '🌙 Dark';
+function updateThemeButton(theme) {
+    if (themeBtnIcon) {
+        themeBtnIcon.textContent = theme === 'gold-dark' ? '☀️ Light' : '🌙 Dark';
     }
 }
 
 // ─── Event Listeners ───
 function setupEventListeners() {
-    themeToggle.addEventListener('click', toggleTheme);
-    searchInput.addEventListener('input', debounce(filterTable, 200));
+    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
 
-    currencySelect.addEventListener('change', () => {
-        currentCurrency = currencySelect.value;
-        renderMajorCoins(allCoins);
-        renderGainersAndLosers(allCoins);
-        sortAndRender();
-        updateTicker(allCoins.slice(0, 15));
-    });
+    if (searchInput) {
+        searchInput.addEventListener('input', debounce(filterTable, 200));
+    }
 
-    btnToggleExpand.addEventListener('click', () => {
-        isExpandedTo100 = !isExpandedTo100;
-        if (isExpandedTo100) {
-            expandBtnText.textContent = 'Show Less (Collapse to Top 10)';
-            expandBtnIcon.textContent = '▲';
-            if (tableCountBadge) tableCountBadge.textContent = `Top ${allCoins.length} Assets`;
-        } else {
-            expandBtnText.textContent = 'Show More (Expand to Top 100 Cryptos)';
-            expandBtnIcon.textContent = '▼';
-            if (tableCountBadge) tableCountBadge.textContent = 'Top 10 Assets';
-        }
-        sortAndRender();
-    });
+    if (currencySelect) {
+        currencySelect.addEventListener('change', () => {
+            currentCurrency = currencySelect.value;
+            renderMajorCoins(allCoins);
+            renderGainersAndLosers(allCoins);
+            sortAndRender();
+            updateTicker(allCoins.slice(0, 15));
+            updateSidebarRates();
+        });
+    }
+
+    if (btnToggleExpand) {
+        btnToggleExpand.addEventListener('click', () => {
+            isExpandedTo100 = !isExpandedTo100;
+            if (isExpandedTo100) {
+                expandBtnText.textContent = 'Show Less (Collapse to Top 10)';
+                expandBtnIcon.textContent = '▲';
+                if (tableCountBadge) tableCountBadge.textContent = `Top ${allCoins.length} Assets`;
+            } else {
+                expandBtnText.textContent = 'Show More (Expand to Top 100 Assets)';
+                expandBtnIcon.textContent = '▼';
+                if (tableCountBadge) tableCountBadge.textContent = 'Top 10 Assets';
+            }
+            sortAndRender();
+        });
+    }
 
     document.querySelectorAll('.sortable').forEach(th => {
         th.addEventListener('click', () => {
@@ -193,30 +218,34 @@ function setupEventListeners() {
         });
     });
 
-    modalClose.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) closeModal();
-    });
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+    }
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeModal();
     });
 
-    window.addEventListener('scroll', () => {
-        backToTop.classList.toggle('visible', window.scrollY > 400);
-    });
-    backToTop.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    if (backToTop) {
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('visible', window.scrollY > 400);
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 
     if (btnRefreshNews) {
         btnRefreshNews.addEventListener('click', () => {
-            fetchGoogleNews();
+            fetchMacroNews();
             resetNewsTimer();
         });
     }
 }
 
-// ─── Forex Factory Style Economic Calendar ───
+// ─── Economic Calendar Widget ───
 function loadEconomicCalendarWidget() {
     if (calendarWidgetLoaded) return;
     calendarWidgetLoaded = true;
@@ -224,7 +253,7 @@ function loadEconomicCalendarWidget() {
     const container = document.getElementById('economicCalendarWidget');
     if (!container) return;
 
-    const isLight = document.body.getAttribute('data-theme') === 'ff-light';
+    const isLight = document.body.getAttribute('data-theme') === 'gold-light';
 
     const script = document.createElement('script');
     script.type = 'text/javascript';
@@ -242,9 +271,8 @@ function loadEconomicCalendarWidget() {
     container.appendChild(script);
 }
 
-// ─── Reliable Multi-Source Price Fetching (Binance + CoinGecko) ───
+// ─── Reliable Price Fetching (Binance REST & CoinGecko Background) ───
 async function fetchLivePrices() {
-    // 1. Try Binance REST (Zero rate-limit, 100% reliable)
     try {
         const binanceRes = await fetch(BINANCE_REST_API);
         if (binanceRes.ok) {
@@ -280,12 +308,12 @@ async function fetchLivePrices() {
             renderGainersAndLosers(allCoins);
             sortAndRender();
             updateTicker(allCoins.slice(0, 15));
+            updateSidebarRates();
         }
     } catch (err) {
-        console.warn('Binance REST fallback:', err);
+        console.warn('Binance REST fallback used:', err);
     }
 
-    // 2. Try CoinGecko in background for 100 coins & sparklines (silently catch 429)
     try {
         const cgRes = await fetch(COINGECKO_API);
         if (cgRes.ok) {
@@ -296,14 +324,15 @@ async function fetchLivePrices() {
                 renderGainersAndLosers(allCoins);
                 sortAndRender();
                 updateTicker(allCoins.slice(0, 15));
+                updateSidebarRates();
             }
         }
     } catch (e) {
-        console.warn('CoinGecko fallback (using Binance dataset):', e);
+        console.warn('CoinGecko fallback (using Binance live stream):', e);
     }
 }
 
-// ─── 1. RENDER TOP 5 MAJOR CRYPTOS (BTC, ETH, SOL, BNB, XRP) ───
+// ─── 1. SPOT CRYPTO RATES (Top 5 Major Cryptos Highlight Cards) ───
 function renderMajorCoins(coins) {
     if (!majorCoinsGrid) return;
     const sym = currencySymbols[currentCurrency] || '';
@@ -319,34 +348,34 @@ function renderMajorCoins(coins) {
 
     majorCoinsGrid.innerHTML = majors.map(coin => {
         const change = coin.price_change_percentage_24h || 0;
-        const changeBadgeClass = change >= 0 ? 'gl-tag green' : 'gl-tag red';
+        const changeBadgeClass = change >= 0 ? 'trend-badge bullish' : 'trend-badge bearish';
         const sign = change >= 0 ? '+' : '';
         const displayPrice = coin.current_price * rate;
 
         return `
-            <div class="ff-major-card" data-coin-id="${coin.id}">
-                <div class="ff-major-top">
-                    <div class="ff-major-coin">
+            <div class="spot-card" data-coin-id="${coin.id}">
+                <div class="spot-card-top">
+                    <div class="spot-card-coin">
                         <img src="${coin.image}" alt="${coin.name}">
                         <div>
-                            <div class="ff-major-name">${escapeHtml(coin.name)}</div>
-                            <div class="ff-major-symbol">${coin.symbol.toUpperCase()} / ${currentCurrency.toUpperCase()}</div>
+                            <div class="spot-card-name">${escapeHtml(coin.name)}</div>
+                            <div class="spot-card-symbol">${coin.symbol.toUpperCase()} / ${currentCurrency.toUpperCase()}</div>
                         </div>
                     </div>
                     <span class="${changeBadgeClass}">${sign}${change.toFixed(2)}%</span>
                 </div>
-                <div class="ff-major-price" id="major-price-${coin.id}">
+                <div class="spot-card-price" id="major-price-${coin.id}">
                     ${sym}${formatPrice(displayPrice)}
                 </div>
-                <div class="ff-major-footer">
-                    <span>24h High: ${sym}${formatPrice(coin.high_24h * rate)}</span>
+                <div class="spot-card-footer">
+                    <span>High: ${sym}${formatPrice(coin.high_24h * rate)}</span>
                     <span>Low: ${sym}${formatPrice(coin.low_24h * rate)}</span>
                 </div>
             </div>
         `;
     }).join('');
 
-    majorCoinsGrid.querySelectorAll('.ff-major-card').forEach(card => {
+    majorCoinsGrid.querySelectorAll('.spot-card').forEach(card => {
         card.addEventListener('click', () => {
             const coin = allCoins.find(c => c.id === card.dataset.coinId);
             if (coin) openModal(coin);
@@ -354,7 +383,7 @@ function renderMajorCoins(coins) {
     });
 }
 
-// ─── 2. RENDER TOP 5 GAINERS & TOP 5 LOSERS (24H) ───
+// ─── 2. TOP 5 GAINERS & TOP 5 LOSERS (24H MOMENTUM) ───
 function renderGainersAndLosers(coins) {
     if (!gainersList || !losersList) return;
     const sym = currencySymbols[currentCurrency] || '';
@@ -365,40 +394,40 @@ function renderGainersAndLosers(coins) {
     const losers = [...valid].sort((a, b) => a.price_change_percentage_24h - b.price_change_percentage_24h).slice(0, 5);
 
     gainersList.innerHTML = gainers.map((coin, i) => `
-        <div class="ff-gl-row" data-coin-id="${coin.id}">
-            <div class="gl-coin-info">
-                <span class="gl-rank">#${i + 1}</span>
-                <img class="gl-img" src="${coin.image}" alt="${coin.name}" loading="lazy">
+        <div class="momentum-row" data-coin-id="${coin.id}">
+            <div class="momentum-coin-info">
+                <span class="momentum-rank">#${i + 1}</span>
+                <img class="momentum-img" src="${coin.image}" alt="${coin.name}" loading="lazy">
                 <div>
-                    <span class="gl-name">${escapeHtml(coin.name)}</span>
-                    <span class="gl-symbol">${coin.symbol}</span>
+                    <span class="momentum-name">${escapeHtml(coin.name)}</span>
+                    <span class="momentum-symbol">${coin.symbol}</span>
                 </div>
             </div>
-            <div class="gl-price-info">
-                <div class="gl-price">${sym}${formatPrice(coin.current_price * rate)}</div>
-                <span class="gl-badge gl-tag green">+${coin.price_change_percentage_24h.toFixed(2)}%</span>
+            <div class="momentum-price-info">
+                <div class="momentum-price">${sym}${formatPrice(coin.current_price * rate)}</div>
+                <span class="momentum-badge trend-badge bullish">+${coin.price_change_percentage_24h.toFixed(2)}%</span>
             </div>
         </div>
     `).join('');
 
     losersList.innerHTML = losers.map((coin, i) => `
-        <div class="ff-gl-row" data-coin-id="${coin.id}">
-            <div class="gl-coin-info">
-                <span class="gl-rank">#${i + 1}</span>
-                <img class="gl-img" src="${coin.image}" alt="${coin.name}" loading="lazy">
+        <div class="momentum-row" data-coin-id="${coin.id}">
+            <div class="momentum-coin-info">
+                <span class="momentum-rank">#${i + 1}</span>
+                <img class="momentum-img" src="${coin.image}" alt="${coin.name}" loading="lazy">
                 <div>
-                    <span class="gl-name">${escapeHtml(coin.name)}</span>
-                    <span class="gl-symbol">${coin.symbol}</span>
+                    <span class="momentum-name">${escapeHtml(coin.name)}</span>
+                    <span class="momentum-symbol">${coin.symbol}</span>
                 </div>
             </div>
-            <div class="gl-price-info">
-                <div class="gl-price">${sym}${formatPrice(coin.current_price * rate)}</div>
-                <span class="gl-badge gl-tag red">${coin.price_change_percentage_24h.toFixed(2)}%</span>
+            <div class="momentum-price-info">
+                <div class="momentum-price">${sym}${formatPrice(coin.current_price * rate)}</div>
+                <span class="momentum-badge trend-badge bearish">${coin.price_change_percentage_24h.toFixed(2)}%</span>
             </div>
         </div>
     `).join('');
 
-    document.querySelectorAll('.ff-gl-row').forEach(row => {
+    document.querySelectorAll('.momentum-row').forEach(row => {
         row.addEventListener('click', () => {
             const coin = allCoins.find(c => c.id === row.dataset.coinId);
             if (coin) openModal(coin);
@@ -406,7 +435,7 @@ function renderGainersAndLosers(coins) {
     });
 }
 
-// ─── 3. BINANCE WEBSOCKET: 1-SECOND REAL-TIME BROADCAST STREAM ───
+// ─── 3. REAL-TIME BINANCE WEBSOCKET STREAM ───
 function initBinanceWebSocket() {
     if (wsSocket) {
         try { wsSocket.close(); } catch(e){}
@@ -416,7 +445,7 @@ function initBinanceWebSocket() {
         wsSocket = new WebSocket(BINANCE_WS_URL);
 
         wsSocket.onopen = () => {
-            console.log('✅ Connected to Binance 1-second WebSocket stream');
+            console.log('✅ Connected to real-time WebSocket stream');
         };
 
         wsSocket.onmessage = (event) => {
@@ -430,11 +459,10 @@ function initBinanceWebSocket() {
         };
 
         wsSocket.onerror = (err) => {
-            console.warn('WebSocket error, retrying in 5s:', err);
+            console.warn('WebSocket error, reconnecting:', err);
         };
 
         wsSocket.onclose = () => {
-            console.log('WebSocket closed, reconnecting in 5s...');
             setTimeout(initBinanceWebSocket, 5000);
         };
     } catch (e) {
@@ -469,18 +497,20 @@ function handleLiveTickers(tickers) {
 
             if (newPrice && oldPrice && Math.abs(newPrice - oldPrice) > 0.00000001) {
                 const isUp = newPrice > oldPrice;
-                coin.current_price = data.priceUsd; // stored in base USD
+                coin.current_price = data.priceUsd;
 
                 if (data.openUsd > 0) {
                     coin.price_change_percentage_24h = ((data.priceUsd - data.openUsd) / data.openUsd) * 100;
                 }
 
                 updateLivePriceCell(coin.id, newPrice, isUp, coin.price_change_percentage_24h);
-                updateLiveMajorCard(coin.id, newPrice, isUp);
+                updateLiveSpotCard(coin.id, newPrice, isUp);
                 updateLiveTickerItem(coin.id, newPrice, isUp);
             }
         }
     });
+
+    updateSidebarRates();
 }
 
 function updateLivePriceCell(coinId, newPrice, isUp, change24h) {
@@ -510,7 +540,7 @@ function updateLivePriceCell(coinId, newPrice, isUp, change24h) {
     }
 }
 
-function updateLiveMajorCard(coinId, newPrice, isUp) {
+function updateLiveSpotCard(coinId, newPrice, isUp) {
     const el = document.getElementById(`major-price-${coinId}`);
     if (el) {
         const sym = currencySymbols[currentCurrency] || '';
@@ -532,81 +562,132 @@ function updateLiveTickerItem(coinId, newPrice, isUp) {
             const sym = currencySymbols[currentCurrency] || '';
             priceEl.textContent = `${sym}${formatPrice(newPrice)}`;
             priceEl.style.color = isUp ? 'var(--green)' : 'var(--red)';
-            setTimeout(() => { priceEl.style.color = 'var(--text-primary)'; }, 600);
+            setTimeout(() => { priceEl.style.color = 'var(--gold-light)'; }, 600);
         }
     });
 }
 
-// ─── 4. DIRECT GOOGLE NEWS LIVE WIRE WITH RELIABLE FALLBACK ───
-async function fetchGoogleNews() {
-    // Attempt 1: Google News via rss2json
+function updateSidebarRates() {
+    const rate = currencyRates[currentCurrency] || 1;
+    const sym = currencySymbols[currentCurrency] || '';
+    const btc = allCoins.find(c => c.symbol.toLowerCase() === 'btc');
+    const eth = allCoins.find(c => c.symbol.toLowerCase() === 'eth');
+    const sol = allCoins.find(c => c.symbol.toLowerCase() === 'sol');
+    const bnb = allCoins.find(c => c.symbol.toLowerCase() === 'bnb');
+    const xrp = allCoins.find(c => c.symbol.toLowerCase() === 'xrp');
+
+    const sideBtc = document.getElementById('side-btc');
+    const sideEth = document.getElementById('side-eth');
+    const sideSol = document.getElementById('side-sol');
+    const sideBnb = document.getElementById('side-bnb');
+    const sideXrp = document.getElementById('side-xrp');
+
+    if (sideBtc && btc) sideBtc.textContent = `${sym}${formatPrice(btc.current_price * rate)}`;
+    if (sideEth && eth) sideEth.textContent = `${sym}${formatPrice(eth.current_price * rate)}`;
+    if (sideSol && sol) sideSol.textContent = `${sym}${formatPrice(sol.current_price * rate)}`;
+    if (sideBnb && bnb) sideBnb.textContent = `${sym}${formatPrice(bnb.current_price * rate)}`;
+    if (sideXrp && xrp) sideXrp.textContent = `${sym}${formatPrice(xrp.current_price * rate)}`;
+}
+
+// ─── 4. MACRO & MARKET NEWS (Images on Every Card + In-Site Article Redirect) ───
+async function fetchMacroNews() {
+    // Attempt 1: Macro & Crypto Google News RSS via rss2json
     try {
-        const res = await fetch(GOOGLE_NEWS_API);
+        const res = await fetch(MACRO_NEWS_API);
         if (res.ok) {
             const data = await res.json();
             if (data.status === 'ok' && Array.isArray(data.items) && data.items.length > 0) {
-                renderGoogleNews(data.items.slice(0, 12));
+                processAndRenderNews(data.items.slice(0, 12));
                 return;
             }
         }
     } catch (e) {
-        console.warn('Google News attempt 1 error:', e);
+        console.warn('Macro news fetch attempt 1 error:', e);
     }
 
-    // Attempt 2: Cointelegraph RSS (Zero-fail fallback)
+    // Attempt 2: Cointelegraph RSS fallback
     try {
         const ctRes = await fetch(COINTELEGRAPH_API);
         if (ctRes.ok) {
             const ctData = await ctRes.json();
             if (ctData.status === 'ok' && Array.isArray(ctData.items) && ctData.items.length > 0) {
-                renderGoogleNews(ctData.items.slice(0, 12));
+                processAndRenderNews(ctData.items.slice(0, 12));
                 return;
             }
         }
     } catch (e) {
-        console.warn('Cointelegraph attempt 2 error:', e);
+        console.warn('Cointelegraph fallback error:', e);
     }
 
-    // Attempt 3: Built-in Live Dispatches (Never leaves screen blank)
-    renderCuratedLiveNews();
+    // Attempt 3: Comprehensive Built-In Market Intelligence Dispatches
+    renderCuratedMacroNews();
 }
 
-function renderCuratedLiveNews() {
+function processAndRenderNews(rawItems) {
+    const formatted = rawItems.map((item, index) => {
+        const assignedImage = item.thumbnail || (item.enclosure && item.enclosure.link) || NEWS_IMAGES[index % NEWS_IMAGES.length];
+        const sourceName = item.author || extractSourceFromTitle(item.title) || 'Financial Press';
+        const cleanTitle = cleanNewsTitle(item.title);
+        const cleanSnippet = cleanHtml(item.description || '');
+        const id = 'art_' + index + '_' + Math.abs(hashCode(cleanTitle));
+
+        return {
+            id: id,
+            title: cleanTitle,
+            snippet: cleanSnippet,
+            source: sourceName,
+            link: item.link,
+            image: assignedImage,
+            pubDate: formatPubDate(item.pubDate)
+        };
+    });
+
+    currentNewsArticles = formatted;
+
+    // Cache to localStorage for article.html to read immediately
+    try {
+        localStorage.setItem('cached_crypto_news', JSON.stringify(formatted));
+    } catch (e) {}
+
+    renderNewsCards(formatted);
+}
+
+function renderCuratedMacroNews() {
     const curated = [
-        { title: "Bitcoin Surges as Institutional Inflows Cross Record Highs", author: "Google News • Bloomberg", link: "https://news.google.com/search?q=bitcoin", pubDate: new Date().toISOString(), description: "Cryptocurrency market breadth expands as Bitcoin institutional treasury accumulation accelerates across global funds." },
-        { title: "Federal Reserve Interest Rate Policy Shapes Digital Asset Liquidity", author: "Google News • Reuters", link: "https://news.google.com/search?q=crypto+fed", pubDate: new Date(Date.now() - 900000).toISOString(), description: "Macroeconomic indicators point toward shifting monetary policy, driving capital into decentralized financial assets." },
-        { title: "Solana Network Hits New Daily Transaction Volume Milestone", author: "Google News • CoinDesk", link: "https://news.google.com/search?q=solana", pubDate: new Date(Date.now() - 1800000).toISOString(), description: "DeFi protocols and high-frequency liquidity on Solana push ecosystem TVL to multi-month peaks." },
-        { title: "Ethereum Layer-2 Networks Process 80% of All Smart Contract Activity", author: "Google News • Cointelegraph", link: "https://news.google.com/search?q=ethereum", pubDate: new Date(Date.now() - 3600000).toISOString(), description: "Rollup scaling efficiency reduces average transaction fees while total active addresses exceed historical averages." }
+        { id: 'art_1_macro', title: "Federal Reserve Interest Rate Trajectory Shapes Global Liquidity and Cryptocurrency Valuations", source: "Bloomberg Markets", snippet: "Macroeconomic indicators, sovereign bond yield curves, and central bank commentary indicate potential rate adjustments, driving capital into Bitcoin and risk assets.", pubDate: "15m ago", link: "https://news.google.com/search?q=crypto+fed", image: NEWS_IMAGES[3] },
+        { id: 'art_2_inflation', title: "US Consumer Price Index (CPI) Inflation Print Impacts Digital Asset Treasury Inflows", source: "Reuters Financial", snippet: "Institutional asset managers analyze latest inflation benchmarks as spot Bitcoin and Ethereum exchange-traded funds report heightened volume.", pubDate: "45m ago", link: "https://news.google.com/search?q=crypto+inflation", image: NEWS_IMAGES[1] },
+        { id: 'art_3_sec', title: "Global Regulatory Frameworks and SEC Guidance Solidify Digital Asset Infrastructure", source: "Financial Times", snippet: "Cross-border regulatory harmonization provides institutional grade clarity for major exchange operations and custodial banking reserves.", pubDate: "1h ago", link: "https://news.google.com/search?q=crypto+regulation", image: NEWS_IMAGES[0] },
+        { id: 'art_4_sol', title: "High-Frequency Blockchain Settlement Volumes Reach New Highs Amid DeFi Expansion", source: "CoinDesk Research", snippet: "Decentralized liquidity protocols and decentralized exchange volume continue to post robust metrics across high-throughput networks.", pubDate: "2h ago", link: "https://news.google.com/search?q=solana+defi", image: NEWS_IMAGES[7] },
+        { id: 'art_5_gold', title: "Gold and Digital Gold: Correlation Dynamics Between Precious Metals and Bitcoin", source: "MarketWatch", snippet: "Hedge portfolios increasingly pair physical bullion reserves with decentralized digital assets as a twin buffer against currency depreciation.", pubDate: "3h ago", link: "https://news.google.com/search?q=gold+bitcoin", image: NEWS_IMAGES[8] },
+        { id: 'art_6_eth', title: "Ethereum Layer-2 Rollups Process Over 85% of Smart Contract Transactions", source: "Cointelegraph", snippet: "Ecosystem scaling efficiency substantially compresses gas fee costs while total active addresses expand toward new quarterly benchmarks.", pubDate: "4h ago", link: "https://news.google.com/search?q=ethereum+layer2", image: NEWS_IMAGES[4] }
     ];
-    renderGoogleNews(curated);
+
+    currentNewsArticles = curated;
+    try {
+        localStorage.setItem('cached_crypto_news', JSON.stringify(curated));
+    } catch (e) {}
+    renderNewsCards(curated);
 }
 
-function renderGoogleNews(items) {
+function renderNewsCards(items) {
     if (!googleNewsGrid || !items || items.length === 0) return;
 
-    googleNewsGrid.innerHTML = items.map(item => {
-        const timeAgo = formatPubDate(item.pubDate);
-        const sourceName = item.author || extractSourceFromTitle(item.title) || 'Google News';
-        const cleanTitle = cleanNewsTitle(item.title);
-        const cleanDesc = cleanHtml(item.description || '');
-
-        return `
-            <article class="ff-news-card fade-in">
-                <div class="ff-news-meta">
-                    <span class="ff-news-source">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-2h2v2zm0-4H9V7h2v5z"/></svg>
-                        ${escapeHtml(sourceName)}
-                    </span>
-                    <span>${timeAgo}</span>
-                </div>
-                <h4 class="ff-news-title">${escapeHtml(cleanTitle)}</h4>
-                <p class="ff-news-snippet">${escapeHtml(cleanDesc)}</p>
-                <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="ff-news-link">
-                    Read Full Google Dispatch →
+    googleNewsGrid.innerHTML = items.map(item => `
+        <article class="market-news-card fade-in">
+            <div class="news-card-image-wrap">
+                <img class="news-card-img" src="${item.image}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.src='${NEWS_IMAGES[0]}'">
+                <span class="news-card-badge">${escapeHtml(item.source)}</span>
+                <span class="news-card-time">${item.pubDate}</span>
+            </div>
+            <div class="news-card-body">
+                <h4 class="news-card-title">${escapeHtml(item.title)}</h4>
+                <p class="news-card-snippet">${escapeHtml(item.snippet)}</p>
+                <a href="article.html?id=${encodeURIComponent(item.id)}" class="btn-read-analysis">
+                    Read Full Analysis →
                 </a>
-            </article>
-        `;
-    }).join('');
+            </div>
+        </article>
+    `).join('');
 }
 
 function startNewsTimer() {
@@ -615,7 +696,7 @@ function startNewsTimer() {
         if (newsTimerEl) newsTimerEl.textContent = newsCountdown + 's';
 
         if (newsCountdown <= 0) {
-            fetchGoogleNews();
+            fetchMacroNews();
             resetNewsTimer();
         }
     }, 1000);
@@ -638,9 +719,9 @@ function formatPubDate(dateStr) {
 }
 
 function extractSourceFromTitle(title) {
-    if (!title) return 'Google News';
+    if (!title) return 'Financial Press';
     const parts = title.split(' - ');
-    return parts.length > 1 ? parts[parts.length - 1] : 'Google News';
+    return parts.length > 1 ? parts[parts.length - 1] : 'Financial Press';
 }
 
 function cleanNewsTitle(title) {
@@ -655,8 +736,19 @@ function cleanHtml(str) {
     return tmp.textContent || tmp.innerText || '';
 }
 
-// ─── 5. SORT & RENDER TABLE (TOP 10 OR EXPANDED TOP 100) ───
+function hashCode(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+    }
+    return hash;
+}
+
+// ─── 5. VALUATION BOARD (Top 10 Default + Show More 100) ───
 function sortAndRender() {
+    if (!tableBody) return;
+
     const sorted = [...allCoins].sort((a, b) => {
         let valA = a[sortField];
         let valB = b[sortField];
@@ -687,7 +779,8 @@ function updateSortIndicators() {
 }
 
 function renderTable(coins) {
-    const search = searchInput.value.toLowerCase().trim();
+    if (!tableBody) return;
+    const search = searchInput ? searchInput.value.toLowerCase().trim() : '';
     const filtered = search
         ? allCoins.filter(c =>
             c.name.toLowerCase().includes(search) ||
@@ -699,7 +792,7 @@ function renderTable(coins) {
         tableBody.innerHTML = `
             <tr>
                 <td colspan="9" style="text-align:center; padding:35px; color:var(--text-muted);">
-                    No assets found matching "<strong>${escapeHtml(search)}</strong>"
+                    No assets recorded matching "<strong>${escapeHtml(search)}</strong>"
                 </td>
             </tr>`;
         return;
@@ -733,7 +826,6 @@ function renderTable(coins) {
         </tr>`;
     }).join('');
 
-    // Sparklines
     filtered.forEach(coin => {
         if (coin.sparkline_in_7d?.price) {
             const row = tableBody.querySelector(`tr[data-coin-id="${coin.id}"]`);
@@ -751,7 +843,6 @@ function renderTable(coins) {
         }
     });
 
-    // Row click → modal
     tableBody.querySelectorAll('tr[data-coin-id]').forEach(row => {
         row.addEventListener('click', () => {
             const coinId = row.dataset.coinId;
@@ -793,6 +884,7 @@ function drawSparkline(canvas, prices, change) {
 
 // ─── Ticker Tape ───
 function updateTicker(topCoins) {
+    if (!ticker) return;
     const sym = currencySymbols[currentCurrency] || '';
     const rate = currencyRates[currentCurrency] || 1;
 
@@ -817,6 +909,7 @@ function updateTicker(topCoins) {
 
 // ─── Modal ───
 function openModal(coin) {
+    if (!modalContent || !modalOverlay) return;
     const sym = currencySymbols[currentCurrency] || '';
     const rate = currencyRates[currentCurrency] || 1;
 
@@ -836,35 +929,35 @@ function openModal(coin) {
 
         <div class="modal-stats">
             <div class="modal-stat">
-                <div class="modal-stat-label">Market Cap</div>
+                <div class="modal-stat-label">Market Capitalization</div>
                 <div class="modal-stat-value">${sym}${formatCompact(coin.market_cap * rate)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">24h Volume</div>
+                <div class="modal-stat-label">24h Trading Volume</div>
                 <div class="modal-stat-value">${sym}${formatCompact(coin.total_volume * rate)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">24h High</div>
+                <div class="modal-stat-label">24h High Record</div>
                 <div class="modal-stat-value">${sym}${formatPrice(coin.high_24h * rate)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">24h Low</div>
+                <div class="modal-stat-label">24h Low Record</div>
                 <div class="modal-stat-value">${sym}${formatPrice(coin.low_24h * rate)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">Circulating Supply</div>
+                <div class="modal-stat-label">Circulating Reserve</div>
                 <div class="modal-stat-value">${coin.circulating_supply ? formatCompact(coin.circulating_supply) : 'N/A'}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">Total Supply</div>
+                <div class="modal-stat-label">Total Reserve Ceiling</div>
                 <div class="modal-stat-value">${coin.total_supply ? formatCompact(coin.total_supply) : '∞'}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">All-Time High (ATH)</div>
+                <div class="modal-stat-label">Historical High (ATH)</div>
                 <div class="modal-stat-value">${sym}${formatPrice((coin.ath || coin.current_price * 1.4) * rate)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">All-Time Low (ATL)</div>
+                <div class="modal-stat-label">Historical Low (ATL)</div>
                 <div class="modal-stat-value">${sym}${formatPrice((coin.atl || coin.current_price * 0.1) * rate)}</div>
             </div>
         </div>
@@ -875,6 +968,7 @@ function openModal(coin) {
 }
 
 function closeModal() {
+    if (!modalOverlay) return;
     modalOverlay.classList.remove('active');
     document.body.style.overflow = '';
 }
