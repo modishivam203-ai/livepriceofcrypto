@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Token Valuation Directory | CoinGecko & CoinMarketCap Price Aggregator | LivePriceOfCrypto</title>
+    <meta name="description" content="Comprehensive cryptocurrency price aggregator and valuation index powered by CoinGecko and CoinMarketCap metrics. Live market caps, 24h volumes, and interactive charts for all world digital currencies.">
+    <meta name="keywords" content="crypto price aggregator, coingecko crypto list, coinmarketcap world crypto, bitcoin market cap, crypto volume rank">
+    <link rel="canonical" href="https://livepriceofcrypto.com/directory.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
+    
+    <style>
+        .directory-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 22px;
+        }
+        .directory-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .dir-categories {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            max-width: 100%;
+            padding-bottom: 4px;
+        }
+        .dir-cat-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }
+        .dir-cat-btn:hover {
+            background: #e0f2fe;
+            color: var(--lpg-blue);
+        }
+        .dir-cat-btn.active {
+            background: var(--lpg-blue);
+            color: #ffffff;
+            border-color: var(--lpg-blue);
+            font-weight: 700;
+        }
+        .dir-search-input {
+            background: #ffffff;
+            border: 1px solid var(--border-dark);
+            border-radius: var(--radius-sm);
+            padding: 6px 12px;
+            font-size: 12.5px;
+            color: var(--text-primary);
+            outline: none;
+            width: 220px;
+        }
+        .dir-search-input:focus {
+            border-color: var(--lpg-blue);
+        }
+        .table-responsive-dir {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+        }
+        .directory-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            text-align: left;
+        }
+        .directory-table th {
+            background: var(--bg-surface);
+            padding: 10px 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .directory-table th:hover {
+            color: var(--lpg-blue);
+        }
+        .directory-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-primary);
+        }
+        .directory-table tr:hover {
+            background: #f0f9ff;
+        }
+        .coin-meta-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .coin-meta-cell img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+        }
+        .coin-meta-name {
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .coin-meta-symbol {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+        }
+        .btn-view-chart-cell {
+            background: #ffffff;
+            border: 1px solid var(--border-dark);
+            color: var(--lpg-blue);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-view-chart-cell:hover {
+            background: var(--lpg-blue);
+            color: #ffffff;
+            border-color: var(--lpg-blue);
+        }
+    </style>
+</head>
+<body data-theme="gold-light">
+
+    <!-- Top Sky-Blue Header -->
+    <header class="lpg-top-header">
+        <div class="lpg-header-container">
+            <div class="lpg-brand-wrap">
+                <a href="index.html" class="lpg-brand-link">
+                    <div class="lpg-brand-text">
+                        <div class="lpg-brand-top">
+                            <span class="brand-live">Live</span>
+                            <svg class="brand-curve-svg" viewBox="0 0 36 18" width="32" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 14 C10 14, 18 4, 30 2" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+                                <path d="M24 2 L31 2 L31 9" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h1 class="lpg-brand-title">Price of Crypto</h1>
+                    </div>
+                </a>
+                <div class="lpg-segmented-loader" title="Live WebSocket Data Stream Active">
+                    <span class="seg seg-1"></span><span class="seg seg-2"></span><span class="seg seg-3"></span><span class="seg seg-4"></span><span class="seg seg-5"></span><span class="seg seg-6"></span><span class="seg seg-7"></span>
+                    <span class="seg-tag">LIVE</span>
+                </div>
+            </div>
+
+            <div class="lpg-spot-strip" id="headerSpotStrip">
+                <div class="lpg-spot-box" data-coin-id="bitcoin" onclick="openChartModalBySymbol('btc')">
+                    <div class="spot-title-row"><span class="spot-icon">🪙</span><span class="spot-name">SPOT BTC</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-btc">$74,850.00</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-btc">▲ 1.45%</span></div>
+                    <div class="spot-range-row" id="headerRange-btc">High: $75,250 | Low: $73,600</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="ethereum" onclick="openChartModalBySymbol('eth')">
+                    <div class="spot-title-row"><span class="spot-icon">🔷</span><span class="spot-name">SPOT ETH</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-eth">$2,845.00</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-eth">▲ 2.15%</span></div>
+                    <div class="spot-range-row" id="headerRange-eth">High: $2,890 | Low: $2,760</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="solana" onclick="openChartModalBySymbol('sol')">
+                    <div class="spot-title-row"><span class="spot-icon">🟣</span><span class="spot-name">SPOT SOL</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-sol">$188.50</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-sol">▲ 4.85%</span></div>
+                    <div class="spot-range-row" id="headerRange-sol">High: $194.00 | Low: $178.50</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="binancecoin" onclick="openChartModalBySymbol('bnb')">
+                    <div class="spot-title-row"><span class="spot-icon">🟡</span><span class="spot-name">SPOT BNB</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-bnb">$595.20</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bearish" id="headerChange-bnb">▼ 0.65%</span></div>
+                    <div class="spot-range-row" id="headerRange-bnb">High: $608.00 | Low: $588.00</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="ripple" onclick="openChartModalBySymbol('xrp')">
+                    <div class="spot-title-row"><span class="spot-icon">⚪</span><span class="spot-name">SPOT XRP</span><span class="spot-arrow up">▲</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-xrp">$0.5840</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-xrp">▲ 3.40%</span></div>
+                    <div class="spot-range-row" id="headerRange-xrp">High: $0.6020 | Low: $0.5650</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="lpg-nav-bar">
+        <div class="lpg-nav-container">
+            <a href="index.html" class="nav-tab">Live Crypto Price</a>
+            <a href="charting.html" class="nav-tab">📈 Charting & altFINS</a>
+            <a href="onchain.html" class="nav-tab">⛓️ On-Chain Analytics</a>
+            <a href="defi.html" class="nav-tab">🏛️ DeFi & Protocol Metrics</a>
+            <a href="directory.html" class="nav-tab active">🪙 Token Directory</a>
+            <a href="index.html#sectionCalculator" class="nav-tab">🧮 Calculator</a>
+            <a href="#worldwideSidebar" class="nav-tab"><span class="badge-live-tab">live</span> Exchange Rate</a>
+            <a href="index.html#sectionNews" class="nav-tab">📰 Market News</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container main-portal-layout">
+        <main class="main-column">
+            
+            <section class="portal-heading-section">
+                <h2 class="portal-main-title">GLOBAL TOKEN DIRECTORY & PRICE AGGREGATOR</h2>
+                <div class="portal-meta-row">
+                    <span class="meta-calendar-icon">🪙</span>
+                    <span class="meta-updated-text">Powered by <strong>CoinGecko</strong> & <strong>CoinMarketCap</strong> Market Indices</span>
+                </div>
+                <p class="portal-desc-text">
+                    Comprehensive real-time cryptocurrency directory tracking global market capitalizations, 24-hour volume liquidity, circulating supplies, and interactive historical charting for top digital assets worldwide.
+                </p>
+            </section>
+
+            <!-- Global Market Overview Bar -->
+            <section class="directory-card">
+                <div class="section-header-row">
+                    <div>
+                        <h3 class="section-heading-text">Global Cryptocurrency Valuation Index</h3>
+                        <p class="section-heading-sub">Aggregated global metrics across 14,000+ coins and 900+ spot cryptocurrency exchanges.</p>
+                    </div>
+                </div>
+
+                <div class="portal-substats-bar" style="margin-bottom: 18px;">
+                    <div class="substat-item">
+                        <span class="substat-label">Total Market Cap:</span>
+                        <strong class="substat-val" id="aggTotalCap">$2.64 Trillion</strong>
+                    </div>
+                    <div class="substat-item">
+                        <span class="substat-label">24h Global Volume:</span>
+                        <strong class="substat-val" id="aggTotalVol">$94.8 Billion</strong>
+                    </div>
+                    <div class="substat-item">
+                        <span class="substat-label">BTC Dominance:</span>
+                        <strong class="substat-val">56.4%</strong>
+                    </div>
+                    <div class="substat-item">
+                        <span class="substat-label">ETH Dominance:</span>
+                        <strong class="substat-val">13.8%</strong>
+                    </div>
+                    <div class="substat-item">
+                        <span class="substat-label">ETH Gas:</span>
+                        <strong class="substat-val" style="color:var(--green);">12 Gwei</strong>
+                    </div>
+                </div>
+
+                <!-- Directory Search & Filter Controls -->
+                <div class="directory-controls">
+                    <div class="dir-categories" id="dirCategoryPills">
+                        <button class="dir-cat-btn active" data-category="all">All Assets</button>
+                        <button class="dir-cat-btn" data-category="l1">Layer 1 & Chains</button>
+                        <button class="dir-cat-btn" data-category="defi">DeFi Protocols</button>
+                        <button class="dir-cat-btn" data-category="meme">Meme Coins</button>
+                        <button class="dir-cat-btn" data-category="ai">AI & Big Data</button>
+                    </div>
+                    <input type="text" id="directorySearchInput" class="dir-search-input" placeholder="Search by coin name or symbol...">
+                </div>
+
+                <!-- Full Token Directory Table -->
+                <div class="table-responsive-dir">
+                    <table class="directory-table">
+                        <thead>
+                            <tr>
+                                <th data-sort="market_cap_rank">Rank ↕</th>
+                                <th data-sort="name">Asset ↕</th>
+                                <th data-sort="current_price">Price ↕</th>
+                                <th data-sort="price_change_percentage_24h">24h Change ↕</th>
+                                <th data-sort="high_24h">24h High</th>
+                                <th data-sort="low_24h">24h Low</th>
+                                <th data-sort="total_volume">24h Volume ↕</th>
+                                <th data-sort="market_cap">Market Cap ↕</th>
+                                <th>Chart</th>
+                            </tr>
+                        </thead>
+                        <tbody id="directoryTableBody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Right Worldwide Sidebar -->
+        <aside class="sidebar-column" id="worldwideSidebar">
+            <div class="sidebar-search-box">
+                <label for="currencySearchInput" class="sidebar-search-label">Country & Currency Search:</label>
+                <input type="text" id="currencySearchInput" class="sidebar-search-input" placeholder="Type country or currency...">
+            </div>
+
+            <div class="sidebar-blue-banner">
+                <span>Crypto Prices Worldwide</span>
+            </div>
+
+            <div class="worldwide-crypto-list" id="worldwideCryptoList">
+                <!-- Dynamically populated -->
+            </div>
+
+            <div class="sidebar-info-box">
+                <h4 class="info-box-title">Why Use Price Aggregators?</h4>
+                <p class="info-box-p">
+                    CoinGecko and CoinMarketCap volume-weighted average price (VWAP) algorithms filter out wash trading and illiquid order books to provide true market valuation benchmark rates.
+                </p>
+                <div class="info-badges">
+                    <span class="info-badge">✓ Volume-Weighted Indexing</span>
+                    <span class="info-badge">✓ Circulating Supply Verified</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Chart Modal Overlay -->
+    <div class="modal-overlay" id="chartModalOverlay">
+        <div class="modal chart-modal-box" id="chartModal">
+            <button class="modal-close" id="chartModalClose">&times;</button>
+            <div class="chart-modal-header" id="chartModalHeader">
+                <div class="chart-modal-coin">
+                    <img id="modalCoinImg" src="" alt="Coin">
+                    <div>
+                        <div class="chart-modal-title"><span id="modalCoinName">Bitcoin</span> (<span id="modalCoinSymbol">BTC</span>)</div>
+                        <div class="chart-modal-rank" id="modalCoinRank">Rank #1</div>
+                    </div>
+                </div>
+                <div class="chart-modal-price-wrap">
+                    <div class="chart-modal-price" id="modalCoinPrice">$74,850.00</div>
+                    <span class="chart-modal-change" id="modalCoinChange">+2.45% (24h)</span>
+                </div>
+            </div>
+            <div class="chart-timeframe-bar">
+                <button class="tf-btn active" data-tf="24h">24H</button>
+                <button class="tf-btn" data-tf="7d">7D</button>
+                <button class="tf-btn" data-tf="30d">30D</button>
+                <button class="tf-btn" data-tf="90d">90D</button>
+                <button class="tf-btn" data-tf="1y">1Y</button>
+            </div>
+            <div class="interactive-chart-canvas-wrap">
+                <canvas id="modalInteractiveCanvas" width="800" height="320"></canvas>
+                <div class="chart-crosshair-tooltip" id="chartTooltip" style="display:none;"></div>
+            </div>
+            <div class="modal-stats" id="modalStatsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="lpg-footer">
+        <div class="container footer-inner">
+            <div class="footer-info">
+                <h4 class="footer-brand">LivePriceOfCrypto.com</h4>
+                <p>Comprehensive cryptocurrency price aggregator, market capitalization directory, and real-time valuation index.</p>
+            </div>
+            <div class="footer-meta">
+                <p>Data Status: <strong style="color:#059669">● Live Aggregation</strong></p>
+                <p class="footer-disclaimer">Disclaimer: All rates and market data provided for informational purposes only. Not financial advice.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Directory Table Rendering & Sorting
+        let dirSortField = 'market_cap_rank';
+        let dirSortAsc = true;
+        let dirCategory = 'all';
+
+        function renderDirectoryTable() {
+            const tbody = document.getElementById('directoryTableBody');
+            const searchVal = (document.getElementById('directorySearchInput')?.value || '').toLowerCase().trim();
+            if (!tbody || !allCoins) return;
+
+            const sym = currencySymbols[currentCurrency] || '$';
+            const rate = currencyRates[currentCurrency] || 1;
+
+            let filtered = allCoins.filter(c => {
+                const matchesCat = dirCategory === 'all' || c.category === dirCategory;
+                const matchesSearch = !searchVal || c.name.toLowerCase().includes(searchVal) || c.symbol.toLowerCase().includes(searchVal);
+                return matchesCat && matchesSearch;
+            });
+
+            filtered.sort((a, b) => {
+                let valA = a[dirSortField];
+                let valB = b[dirSortField];
+                if (valA == null) valA = 0;
+                if (valB == null) valB = 0;
+                if (typeof valA === 'string') {
+                    return dirSortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                }
+                return dirSortAsc ? valA - valB : valB - valA;
+            });
+
+            tbody.innerHTML = filtered.map(coin => {
+                const price = coin.current_price * rate;
+                const change = coin.price_change_percentage_24h || 0;
+                const isBullish = change >= 0;
+                const high = coin.high_24h ? `${sym}${formatPrice(coin.high_24h * rate)}` : '--';
+                const low = coin.low_24h ? `${sym}${formatPrice(coin.low_24h * rate)}` : '--';
+
+                return `
+                    <tr>
+                        <td style="font-family:var(--font-mono); font-weight:700;">#${coin.market_cap_rank || '--'}</td>
+                        <td>
+                            <div class="coin-meta-cell">
+                                <img src="${coin.image}" alt="${coin.name}" loading="lazy">
+                                <div>
+                                    <div class="coin-meta-name">${escapeHtml(coin.name)}</div>
+                                    <span class="coin-meta-symbol">${coin.symbol}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-family:var(--font-mono); font-weight:800;">${sym}${formatPrice(price)}</td>
+                        <td style="font-family:var(--font-mono); font-weight:700; color:${isBullish ? 'var(--green)' : 'var(--red)'};">
+                            ${isBullish ? '+' : ''}${change.toFixed(2)}%
+                        </td>
+                        <td style="font-family:var(--font-mono); font-size:11.5px;">${high}</td>
+                        <td style="font-family:var(--font-mono); font-size:11.5px;">${low}</td>
+                        <td style="font-family:var(--font-mono);">${sym}${formatCompact((coin.total_volume || 0) * rate)}</td>
+                        <td style="font-family:var(--font-mono); font-weight:700;">${sym}${formatCompact((coin.market_cap || 0) * rate)}</td>
+                        <td>
+                            <button class="btn-view-chart-cell" onclick="openChartModalBySymbol('${coin.symbol}')">Chart ↗</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDirectoryTable();
+            window.onCoinsUpdated = renderDirectoryTable;
+
+            // Search listener
+            const searchInput = document.getElementById('directorySearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', renderDirectoryTable);
+            }
+
+            // Category tabs
+            document.querySelectorAll('.dir-cat-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.dir-cat-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    dirCategory = btn.dataset.category;
+                    renderDirectoryTable();
+                });
+            });
+
+            // Table headers sorting
+            document.querySelectorAll('.directory-table th[data-sort]').forEach(th => {
+                th.addEventListener('click', () => {
+                    const field = th.dataset.sort;
+                    if (dirSortField === field) {
+                        dirSortAsc = !dirSortAsc;
+                    } else {
+                        dirSortField = field;
+                        dirSortAsc = field === 'market_cap_rank' || field === 'name';
+                    }
+                    renderDirectoryTable();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

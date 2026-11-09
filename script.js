@@ -479,6 +479,10 @@ function initBinanceWebSocket() {
                     if (activeModalCoin) {
                         updateModalCoinHeader(activeModalCoin);
                     }
+
+                    if (typeof window.onCoinsUpdated === 'function') {
+                        window.onCoinsUpdated();
+                    }
                 }
             } catch (err) {
                 // Silent catch

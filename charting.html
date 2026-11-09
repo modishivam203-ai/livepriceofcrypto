@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Market & Technical Charting | TradingView & altFINS Pattern Screener | LivePriceOfCrypto</title>
+    <meta name="description" content="Advanced technical charting, RSI, MACD indicators, and altFINS AI chart pattern screener. Scan 2,000+ cryptocurrencies for bullish breakouts and golden crosses.">
+    <meta name="keywords" content="crypto charting, tradingview crypto, altfins screener, technical indicators, crypto chart patterns, bitcoin technical analysis">
+    <link rel="canonical" href="https://livepriceofcrypto.com/charting.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+    
+    <style>
+        /* Specific Styles for Technical Charting Station & altFINS Screener */
+        .charting-station-wrap {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+        .chart-coin-selector-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            scrollbar-width: none;
+        }
+        .chart-coin-selector-bar::-webkit-scrollbar { display: none; }
+        .coin-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+            font-family: var(--font-mono);
+        }
+        .coin-chip:hover {
+            border-color: var(--lpg-blue);
+            color: var(--lpg-blue);
+        }
+        .coin-chip.active {
+            background: var(--lpg-blue);
+            color: #ffffff;
+            border-color: var(--lpg-blue);
+        }
+        .tradingview-container-box {
+            width: 100%;
+            height: 600px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+        }
+        
+        /* altFINS Screener Controls */
+        .screener-filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .filter-tabs {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            max-width: 100%;
+            padding-bottom: 4px;
+        }
+        .screener-tab {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 5px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }
+        .screener-tab:hover {
+            background: #e0f2fe;
+            color: var(--lpg-blue);
+        }
+        .screener-tab.active {
+            background: var(--lpg-blue);
+            color: #ffffff;
+            border-color: var(--lpg-blue);
+            font-weight: 700;
+        }
+        .screener-search-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .screener-search-input {
+            background: #ffffff;
+            border: 1px solid var(--border-dark);
+            border-radius: var(--radius-sm);
+            padding: 5px 10px;
+            font-size: 12px;
+            color: var(--text-primary);
+            outline: none;
+        }
+        .screener-search-input:focus {
+            border-color: var(--lpg-blue);
+        }
+        
+        /* Screener Table */
+        .screener-table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+        }
+        .screener-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            text-align: left;
+        }
+        .screener-table th {
+            background: var(--bg-surface);
+            padding: 10px 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        .screener-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-primary);
+        }
+        .screener-table tr:hover {
+            background: #f0f9ff;
+        }
+        .pattern-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+        .pattern-badge.bullish {
+            background: var(--green-bg);
+            color: var(--green);
+        }
+        .pattern-badge.bearish {
+            background: var(--red-bg);
+            color: var(--red);
+        }
+        .confidence-pill {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            color: #0369a1;
+            background: #e0f2fe;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .btn-inspect-chart {
+            background: #ffffff;
+            border: 1px solid var(--border-dark);
+            color: var(--lpg-blue);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .btn-inspect-chart:hover {
+            background: var(--lpg-blue);
+            color: #ffffff;
+            border-color: var(--lpg-blue);
+        }
+    </style>
+</head>
+<body data-theme="gold-light">
+
+    <!-- Top Sky-Blue Header Strip with 5 Spot Rates -->
+    <header class="lpg-top-header">
+        <div class="lpg-header-container">
+            <div class="lpg-brand-wrap">
+                <a href="index.html" class="lpg-brand-link">
+                    <div class="lpg-brand-text">
+                        <div class="lpg-brand-top">
+                            <span class="brand-live">Live</span>
+                            <svg class="brand-curve-svg" viewBox="0 0 36 18" width="32" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 14 C10 14, 18 4, 30 2" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+                                <path d="M24 2 L31 2 L31 9" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h1 class="lpg-brand-title">Price of Crypto</h1>
+                    </div>
+                </a>
+                <div class="lpg-segmented-loader" title="Live WebSocket Data Stream Active">
+                    <span class="seg seg-1"></span>
+                    <span class="seg seg-2"></span>
+                    <span class="seg seg-3"></span>
+                    <span class="seg seg-4"></span>
+                    <span class="seg seg-5"></span>
+                    <span class="seg seg-6"></span>
+                    <span class="seg seg-7"></span>
+                    <span class="seg-tag">LIVE</span>
+                </div>
+            </div>
+
+            <div class="lpg-spot-strip" id="headerSpotStrip">
+                <div class="lpg-spot-box" data-coin-id="bitcoin" id="spotBox-btc" onclick="openChartModalBySymbol('btc')">
+                    <div class="spot-title-row"><span class="spot-icon">🪙</span><span class="spot-name">SPOT BTC</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-btc">$74,850.00</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-btc">▲ 1.45% (1,070.20)</span></div>
+                    <div class="spot-range-row" id="headerRange-btc">High: $75,250 | Low: $73,600</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="ethereum" id="spotBox-eth" onclick="openChartModalBySymbol('eth')">
+                    <div class="spot-title-row"><span class="spot-icon">🔷</span><span class="spot-name">SPOT ETH</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-eth">$2,845.00</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-eth">▲ 2.15% (59.80)</span></div>
+                    <div class="spot-range-row" id="headerRange-eth">High: $2,890 | Low: $2,760</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="solana" id="spotBox-sol" onclick="openChartModalBySymbol('sol')">
+                    <div class="spot-title-row"><span class="spot-icon">🟣</span><span class="spot-name">SPOT SOL</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-sol">$188.50</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-sol">▲ 4.85% (8.70)</span></div>
+                    <div class="spot-range-row" id="headerRange-sol">High: $194.00 | Low: $178.50</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="binancecoin" id="spotBox-bnb" onclick="openChartModalBySymbol('bnb')">
+                    <div class="spot-title-row"><span class="spot-icon">🟡</span><span class="spot-name">SPOT BNB</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-bnb">$595.20</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bearish" id="headerChange-bnb">▼ 0.65% (-3.90)</span></div>
+                    <div class="spot-range-row" id="headerRange-bnb">High: $608.00 | Low: $588.00</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="ripple" id="spotBox-xrp" onclick="openChartModalBySymbol('xrp')">
+                    <div class="spot-title-row"><span class="spot-icon">⚪</span><span class="spot-name">SPOT XRP</span><span class="spot-arrow up">▲</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-xrp">$0.5840</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-xrp">▲ 3.40% (+0.019)</span></div>
+                    <div class="spot-range-row" id="headerRange-xrp">High: $0.6020 | Low: $0.5650</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Dark Charcoal Navigation Bar -->
+    <nav class="lpg-nav-bar">
+        <div class="lpg-nav-container">
+            <a href="index.html" class="nav-tab">Live Crypto Price</a>
+            <a href="charting.html" class="nav-tab active">📈 Charting & altFINS</a>
+            <a href="onchain.html" class="nav-tab">⛓️ On-Chain Analytics</a>
+            <a href="defi.html" class="nav-tab">🏛️ DeFi & Protocol Metrics</a>
+            <a href="index.html#sectionCalculator" class="nav-tab">🧮 Calculator</a>
+            <a href="#worldwideSidebar" class="nav-tab"><span class="badge-live-tab">live</span> Exchange Rate</a>
+            <a href="index.html#sectionNews" class="nav-tab">📰 Market News</a>
+            <a href="index.html#sectionCalendar" class="nav-tab">📅 Economic Calendar</a>
+        </div>
+    </nav>
+
+    <!-- Main Body Container -->
+    <div class="container main-portal-layout">
+        <main class="main-column">
+            
+            <!-- Page Headline -->
+            <section class="portal-heading-section">
+                <h2 class="portal-main-title">MARKET & TECHNICAL CHARTING</h2>
+                <div class="portal-meta-row">
+                    <span class="meta-calendar-icon">⚡</span>
+                    <span class="meta-updated-text">Powered by <strong>TradingView Advanced Charts</strong> & <strong>altFINS Pattern Screener</strong></span>
+                </div>
+                <p class="portal-desc-text">
+                    Professional grade charting with multi-timeframe candlestick indicators, moving averages, RSI/MACD studies, strategy backtesting, and automated AI detection across 2,000+ cryptocurrency pairs.
+                </p>
+            </section>
+
+            <!-- 1. TRADINGVIEW ADVANCED CHARTING STATION -->
+            <section class="charting-station-wrap">
+                <div class="section-header-row">
+                    <div>
+                        <h3 class="section-heading-text">TradingView Interactive Workstation</h3>
+                        <p class="section-heading-sub">Institutional technical indicators, Fibonacci retracements, Bollinger Bands, and live Binance execution feeds.</p>
+                    </div>
+                </div>
+
+                <!-- Quick Coin Pair Switcher Chips -->
+                <div class="chart-coin-selector-bar" id="chartPairChips">
+                    <button class="coin-chip active" data-symbol="BINANCE:BTCUSDT">BTC/USDT</button>
+                    <button class="coin-chip" data-symbol="BINANCE:ETHUSDT">ETH/USDT</button>
+                    <button class="coin-chip" data-symbol="BINANCE:SOLUSDT">SOL/USDT</button>
+                    <button class="coin-chip" data-symbol="BINANCE:BNBUSDT">BNB/USDT</button>
+                    <button class="coin-chip" data-symbol="BINANCE:XRPUSDT">XRP/USDT</button>
+                    <button class="coin-chip" data-symbol="BINANCE:DOGEUSDT">DOGE/USDT</button>
+                    <button class="coin-chip" data-symbol="BINANCE:SUIUSDT">SUI/USDT</button>
+                    <button class="coin-chip" data-symbol="BINANCE:NEARUSDT">NEAR/USDT</button>
+                </div>
+
+                <!-- TradingView Embed Container -->
+                <div class="tradingview-container-box" id="tradingviewWidgetContainer">
+                    <!-- Embedded via JavaScript -->
+                </div>
+            </section>
+
+            <!-- 2. altFINS AI CHART PATTERN & TECHNICAL SCREENER -->
+            <section class="charting-station-wrap" id="altfinsScreenerSection">
+                <div class="section-header-row">
+                    <div>
+                        <h3 class="section-heading-text">altFINS AI Technical Pattern Screener</h3>
+                        <p class="section-heading-sub">Real-time algorithmic scan across 2,000+ crypto assets identifying chart patterns, breakouts, and momentum triggers.</p>
+                    </div>
+                    <span class="badge-live-tab" style="padding: 4px 8px;">2,140 Coins Scanned</span>
+                </div>
+
+                <!-- Screener Filter Tabs -->
+                <div class="screener-filter-bar">
+                    <div class="filter-tabs" id="screenerTabs">
+                        <button class="screener-tab active" data-filter="all">All Patterns (Live)</button>
+                        <button class="screener-tab" data-filter="breakout">Bullish Breakouts</button>
+                        <button class="screener-tab" data-filter="rsi">RSI Oversold (&lt;35)</button>
+                        <button class="screener-tab" data-filter="golden_cross">Golden Cross (50/200)</button>
+                        <button class="screener-tab" data-filter="triangle">Ascending Triangles</button>
+                        <button class="screener-tab" data-filter="macd">MACD Bullish Cross</button>
+                    </div>
+                    <div class="screener-search-wrap">
+                        <input type="text" id="screenerSearchInput" class="screener-search-input" placeholder="Filter by asset name or symbol...">
+                    </div>
+                </div>
+
+                <!-- Screener Results Table -->
+                <div class="screener-table-wrap">
+                    <table class="screener-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Price</th>
+                                <th>24h Change</th>
+                                <th>Pattern Detected</th>
+                                <th>Direction</th>
+                                <th>Confidence</th>
+                                <th>Target</th>
+                                <th>Stop Loss</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="screenerTableBody">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Right Worldwide Sidebar -->
+        <aside class="sidebar-column" id="worldwideSidebar">
+            <div class="sidebar-search-box">
+                <label for="currencySearchInput" class="sidebar-search-label">Country & Currency Search:</label>
+                <input type="text" id="currencySearchInput" class="sidebar-search-input" placeholder="Type country or currency...">
+            </div>
+
+            <div class="sidebar-blue-banner">
+                <span>Crypto Prices Worldwide</span>
+            </div>
+
+            <div class="worldwide-crypto-list" id="worldwideCryptoList">
+                <!-- Dynamically populated -->
+            </div>
+
+            <div class="sidebar-info-box">
+                <h4 class="info-box-title">Technical Analysis Cheatsheet</h4>
+                <p class="info-box-p">
+                    <strong>RSI (&lt;30)</strong>: Oversold indicator signalling imminent mean-reversion buying.<br>
+                    <strong>Golden Cross</strong>: 50-day EMA crossing above 200-day EMA confirms macro bull trend.<br>
+                    <strong>Breakout</strong>: Asset surging above multi-week resistance on 2x+ average volume.
+                </p>
+                <div class="info-badges">
+                    <span class="info-badge">✓ Real-time Pattern Verification</span>
+                    <span class="info-badge">✓ AI Confidence Scoring</span>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Chart Modal Overlay -->
+    <div class="modal-overlay" id="chartModalOverlay">
+        <div class="modal chart-modal-box" id="chartModal">
+            <button class="modal-close" id="chartModalClose">&times;</button>
+            <div class="chart-modal-header" id="chartModalHeader">
+                <div class="chart-modal-coin">
+                    <img id="modalCoinImg" src="" alt="Coin">
+                    <div>
+                        <div class="chart-modal-title"><span id="modalCoinName">Bitcoin</span> (<span id="modalCoinSymbol">BTC</span>)</div>
+                        <div class="chart-modal-rank" id="modalCoinRank">Rank #1</div>
+                    </div>
+                </div>
+                <div class="chart-modal-price-wrap">
+                    <div class="chart-modal-price" id="modalCoinPrice">$74,850.00</div>
+                    <span class="chart-modal-change" id="modalCoinChange">+2.45% (24h)</span>
+                </div>
+            </div>
+            <div class="chart-timeframe-bar">
+                <button class="tf-btn active" data-tf="24h">24H</button>
+                <button class="tf-btn" data-tf="7d">7D</button>
+                <button class="tf-btn" data-tf="30d">30D</button>
+                <button class="tf-btn" data-tf="90d">90D</button>
+                <button class="tf-btn" data-tf="1y">1Y</button>
+            </div>
+            <div class="interactive-chart-canvas-wrap">
+                <canvas id="modalInteractiveCanvas" width="800" height="320"></canvas>
+                <div class="chart-crosshair-tooltip" id="chartTooltip" style="display:none;"></div>
+            </div>
+            <div class="modal-stats" id="modalStatsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="lpg-footer">
+        <div class="container footer-inner">
+            <div class="footer-info">
+                <h4 class="footer-brand">LivePriceOfCrypto.com</h4>
+                <p>Technical charting workstation, altFINS AI pattern screener, and real-time market analytics.</p>
+            </div>
+            <div class="footer-meta">
+                <p>TradingView Integration: <strong style="color:#059669">● Active</strong></p>
+                <p class="footer-disclaimer">Disclaimer: All technical indicators and algorithmic patterns provided for informational and educational purposes only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // TradingView Embed Script & altFINS Screener Logic
+        let currentChartSymbol = 'BINANCE:BTCUSDT';
+
+        function loadTradingViewChart(symbol) {
+            const container = document.getElementById('tradingviewWidgetContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const widgetDiv = document.createElement('div');
+            widgetDiv.className = 'tradingview-widget-container__widget';
+            widgetDiv.style.width = '100%';
+            widgetDiv.style.height = '100%';
+            container.appendChild(widgetDiv);
+
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+            script.async = true;
+            script.innerHTML = JSON.stringify({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "D",
+                "timezone": "Etc/UTC",
+                "theme": "light",
+                "style": "1",
+                "locale": "en",
+                "enable_publishing": false,
+                "backgroundColor": "#ffffff",
+                "gridColor": "rgba(226, 232, 240, 0.6)",
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "details": true,
+                "hotlist": true,
+                "calendar": true,
+                "studies": [
+                    "RSI@tv-basicstudies",
+                    "MASimple@tv-basicstudies",
+                    "MACD@tv-basicstudies"
+                ]
+            });
+            container.appendChild(script);
+        }
+
+        // altFINS Curated Screener Dataset
+        const ALFINS_SCREENER_DATA = [
+            { symbol: 'BTC', name: 'Bitcoin', price: 74850, change: 1.45, pattern: 'Ascending Triangle Breakout', type: 'triangle', dir: 'Bullish', conf: '94%', target: '$82,000 (+9.5%)', stop: '$72,400 (-3.2%)', tvSym: 'BINANCE:BTCUSDT' },
+            { symbol: 'SOL', name: 'Solana', price: 188.50, change: 4.85, pattern: 'Channel Up Bullish Continuation', type: 'breakout', dir: 'Bullish', conf: '91%', target: '$215.00 (+14.0%)', stop: '$176.00 (-6.6%)', tvSym: 'BINANCE:SOLUSDT' },
+            { symbol: 'SUI', name: 'Sui', price: 2.28, change: 6.90, pattern: 'Golden Cross (50/200 EMA)', type: 'golden_cross', dir: 'Bullish', conf: '89%', target: '$2.80 (+22.8%)', stop: '$2.05 (-10.0%)', tvSym: 'BINANCE:SUIUSDT' },
+            { symbol: 'NEAR', name: 'NEAR Protocol', price: 4.65, change: 5.40, pattern: 'MACD Bullish Histogram Cross', type: 'macd', dir: 'Bullish', conf: '87%', target: '$5.50 (+18.2%)', stop: '$4.25 (-8.6%)', tvSym: 'BINANCE:NEARUSDT' },
+            { symbol: 'ETH', name: 'Ethereum', price: 2845, change: 2.15, pattern: 'Double Bottom Support Reversal', type: 'breakout', dir: 'Bullish', conf: '88%', target: '$3,200 (+12.4%)', stop: '$2,720 (-4.4%)', tvSym: 'BINANCE:ETHUSDT' },
+            { symbol: 'LINK', name: 'Chainlink', price: 11.95, change: -1.20, pattern: 'RSI Oversold Bounce (RSI: 29.4)', type: 'rsi', dir: 'Bullish', conf: '86%', target: '$14.20 (+18.8%)', stop: '$11.10 (-7.1%)', tvSym: 'BINANCE:LINKUSDT' },
+            { symbol: 'AVAX', name: 'Avalanche', price: 27.80, change: -2.30, pattern: 'RSI Key Support Retest (RSI: 31.8)', type: 'rsi', dir: 'Bullish', conf: '84%', target: '$33.50 (+20.5%)', stop: '$25.60 (-7.9%)', tvSym: 'BINANCE:AVAXUSDT' },
+            { symbol: 'AAVE', name: 'Aave', price: 156.40, change: 6.20, pattern: 'Multi-Month Resistance Breakout', type: 'breakout', dir: 'Bullish', conf: '93%', target: '$190.00 (+21.4%)', stop: '$144.00 (-7.9%)', tvSym: 'BINANCE:AAVEUSDT' },
+            { symbol: 'XRP', name: 'XRP', price: 0.584, change: 3.40, pattern: 'Symmetrical Triangle Compression', type: 'triangle', dir: 'Bullish', conf: '82%', target: '$0.72 (+23.2%)', stop: '$0.54 (-7.5%)', tvSym: 'BINANCE:XRPUSDT' },
+            { symbol: 'PEPE', name: 'Pepe', price: 0.0000098, change: 11.20, pattern: 'Volume Weighted Momentum Surge', type: 'breakout', dir: 'Bullish', conf: '90%', target: '$0.0000135 (+37.7%)', stop: '$0.0000085 (-13.2%)', tvSym: 'BINANCE:PEPEUSDT' }
+        ];
+
+        let activeScreenerFilter = 'all';
+
+        function renderScreenerTable() {
+            const tbody = document.getElementById('screenerTableBody');
+            const searchVal = (document.getElementById('screenerSearchInput')?.value || '').toLowerCase().trim();
+            if (!tbody) return;
+
+            const filtered = ALFINS_SCREENER_DATA.filter(item => {
+                const matchesTab = activeScreenerFilter === 'all' || item.type === activeScreenerFilter;
+                const matchesSearch = !searchVal || item.name.toLowerCase().includes(searchVal) || item.symbol.toLowerCase().includes(searchVal);
+                return matchesTab && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--text-muted);">No patterns match the selected criteria.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(item => {
+                const liveCoin = (typeof allCoins !== 'undefined') ? allCoins.find(c => c.symbol.toLowerCase() === item.symbol.toLowerCase()) : null;
+                const price = liveCoin ? liveCoin.current_price : item.price;
+                const change = liveCoin ? liveCoin.price_change_percentage_24h : item.change;
+
+                return `
+                <tr>
+                    <td>
+                        <strong>${item.symbol}</strong>
+                        <div style="font-size:11px; color:var(--text-muted);">${item.name}</div>
+                    </td>
+                    <td style="font-family:var(--font-mono); font-weight:700;">$${price >= 1 ? price.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) : price}</td>
+                    <td style="font-family:var(--font-mono); font-weight:700; color:${change >= 0 ? 'var(--green)' : 'var(--red)'};">
+                        ${change >= 0 ? '+' : ''}${change.toFixed(2)}%
+                    </td>
+                    <td>
+                        <span class="pattern-badge ${item.dir.toLowerCase()}">${item.pattern}</span>
+                    </td>
+                    <td>
+                        <strong style="color:${item.dir === 'Bullish' ? 'var(--green)' : 'var(--red)'}; font-size:11.5px;">${item.dir}</strong>
+                    </td>
+                    <td>
+                        <span class="confidence-pill">${item.conf}</span>
+                    </td>
+                    <td style="font-family:var(--font-mono); color:var(--green); font-weight:700;">${item.target}</td>
+                    <td style="font-family:var(--font-mono); color:var(--red); font-weight:600;">${item.stop}</td>
+                    <td>
+                        <button class="btn-inspect-chart" onclick="switchChartTo('${item.tvSym}')">Inspect ↗</button>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        window.switchChartTo = function(symbol) {
+            currentChartSymbol = symbol;
+            loadTradingViewChart(symbol);
+            document.querySelectorAll('.coin-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.dataset.symbol === symbol);
+            });
+            window.scrollTo({ top: document.querySelector('.charting-station-wrap').offsetTop - 60, behavior: 'smooth' });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTradingViewChart(currentChartSymbol);
+            renderScreenerTable();
+            window.onCoinsUpdated = renderScreenerTable;
+
+            // Coin chip listeners
+            document.querySelectorAll('.coin-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.coin-chip').forEach(c => c.classList.remove('active'));
+                    chip.classList.add('active');
+                    loadTradingViewChart(chip.dataset.symbol);
+                });
+            });
+
+            // Screener tab filters
+            document.querySelectorAll('.screener-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.screener-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    activeScreenerFilter = tab.dataset.filter;
+                    renderScreenerTable();
+                });
+            });
+
+            // Screener search input
+            const searchInput = document.getElementById('screenerSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', renderScreenerTable);
+            }
+        });
+    </script>
+</body>
+</html>

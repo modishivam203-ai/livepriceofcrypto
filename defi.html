@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DeFi & Protocol Metrics | DefiLlama TVL & Token Terminal Financials | LivePriceOfCrypto</title>
+    <meta name="description" content="Decentralized Finance (DeFi) analytics: DefiLlama Total Value Locked (TVL), protocol yield rankings, and Token Terminal financial statements, revenues, and P/S valuation ratios.">
+    <meta name="keywords" content="defi tvl, defillama crypto, token terminal fees, protocol revenue, crypto pe ratio, crypto price to sales">
+    <link rel="canonical" href="https://livepriceofcrypto.com/defi.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+    
+    <style>
+        .defi-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 22px;
+        }
+        .defi-stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .defi-stat-box {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .defi-stat-lbl {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .defi-stat-val {
+            font-family: var(--font-mono);
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .defi-stat-sub {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--green);
+        }
+        
+        /* Chains Multi-bar */
+        .chain-bar-wrap {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .chain-bar-legend {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .legend-color {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+        .chain-progress-multi {
+            height: 14px;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            background: #e2e8f0;
+        }
+        
+        /* Tables */
+        .table-responsive-box {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            margin-top: 14px;
+        }
+        .defi-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            text-align: left;
+        }
+        .defi-table th {
+            background: var(--bg-surface);
+            padding: 10px 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+        .defi-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--text-primary);
+        }
+        .defi-table tr:hover {
+            background: #f0f9ff;
+        }
+        .protocol-logo-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+        .cat-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+        .ps-pill {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        .ps-pill.undervalued { background: var(--green-bg); color: var(--green); }
+        .ps-pill.fair { background: #fef3c7; color: #b45309; }
+        .ps-pill.premium { background: #fee2e2; color: #dc2626; }
+        
+        /* Income Statement Viewer */
+        .income-statement-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .income-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--border);
+            font-size: 12.5px;
+        }
+        .income-row.total {
+            border-top: 2px solid var(--border-dark);
+            border-bottom: none;
+            font-weight: 800;
+            font-size: 13.5px;
+            padding-top: 10px;
+            color: #0f172a;
+        }
+        @media (max-width: 820px) {
+            .defi-stat-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body data-theme="gold-light">
+
+    <!-- Top Sky-Blue Header -->
+    <header class="lpg-top-header">
+        <div class="lpg-header-container">
+            <div class="lpg-brand-wrap">
+                <a href="index.html" class="lpg-brand-link">
+                    <div class="lpg-brand-text">
+                        <div class="lpg-brand-top">
+                            <span class="brand-live">Live</span>
+                            <svg class="brand-curve-svg" viewBox="0 0 36 18" width="32" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 14 C10 14, 18 4, 30 2" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+                                <path d="M24 2 L31 2 L31 9" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h1 class="lpg-brand-title">Price of Crypto</h1>
+                    </div>
+                </a>
+                <div class="lpg-segmented-loader" title="Live WebSocket Data Stream Active">
+                    <span class="seg seg-1"></span><span class="seg seg-2"></span><span class="seg seg-3"></span><span class="seg seg-4"></span><span class="seg seg-5"></span><span class="seg seg-6"></span><span class="seg seg-7"></span>
+                    <span class="seg-tag">LIVE</span>
+                </div>
+            </div>
+
+            <div class="lpg-spot-strip" id="headerSpotStrip">
+                <div class="lpg-spot-box" data-coin-id="bitcoin" onclick="openChartModalBySymbol('btc')">
+                    <div class="spot-title-row"><span class="spot-icon">🪙</span><span class="spot-name">SPOT BTC</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-btc">$74,850.00</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-btc">▲ 1.45%</span></div>
+                    <div class="spot-range-row" id="headerRange-btc">High: $75,250 | Low: $73,600</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="ethereum" onclick="openChartModalBySymbol('eth')">
+                    <div class="spot-title-row"><span class="spot-icon">🔷</span><span class="spot-name">SPOT ETH</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-eth">$2,845.00</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-eth">▲ 2.15%</span></div>
+                    <div class="spot-range-row" id="headerRange-eth">High: $2,890 | Low: $2,760</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="solana" onclick="openChartModalBySymbol('sol')">
+                    <div class="spot-title-row"><span class="spot-icon">🟣</span><span class="spot-name">SPOT SOL</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-sol">$188.50</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-sol">▲ 4.85%</span></div>
+                    <div class="spot-range-row" id="headerRange-sol">High: $194.00 | Low: $178.50</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="binancecoin" onclick="openChartModalBySymbol('bnb')">
+                    <div class="spot-title-row"><span class="spot-icon">🟡</span><span class="spot-name">SPOT BNB</span><span class="spot-arrow down">▼</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-bnb">$595.20</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bearish" id="headerChange-bnb">▼ 0.65%</span></div>
+                    <div class="spot-range-row" id="headerRange-bnb">High: $608.00 | Low: $588.00</div>
+                </div>
+                <div class="lpg-spot-box" data-coin-id="ripple" onclick="openChartModalBySymbol('xrp')">
+                    <div class="spot-title-row"><span class="spot-icon">⚪</span><span class="spot-name">SPOT XRP</span><span class="spot-arrow up">▲</span></div>
+                    <div class="spot-price-row"><strong class="spot-price" id="headerPrice-xrp">$0.5840</strong></div>
+                    <div class="spot-change-row"><span class="spot-change bullish" id="headerChange-xrp">▲ 3.40%</span></div>
+                    <div class="spot-range-row" id="headerRange-xrp">High: $0.6020 | Low: $0.5650</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="lpg-nav-bar">
+        <div class="lpg-nav-container">
+            <a href="index.html" class="nav-tab">Live Crypto Price</a>
+            <a href="charting.html" class="nav-tab">📈 Charting & altFINS</a>
+            <a href="onchain.html" class="nav-tab">⛓️ On-Chain Analytics</a>
+            <a href="defi.html" class="nav-tab active">🏛️ DeFi & Protocol Metrics</a>
+            <a href="directory.html" class="nav-tab">🪙 Token Directory</a>
+            <a href="index.html#sectionCalculator" class="nav-tab">🧮 Calculator</a>
+            <a href="#worldwideSidebar" class="nav-tab"><span class="badge-live-tab">live</span> Exchange Rate</a>
+            <a href="index.html#sectionNews" class="nav-tab">📰 Market News</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container main-portal-layout">
+        <main class="main-column">
+            
+            <section class="portal-heading-section">
+                <h2 class="portal-main-title">DEFI & PROTOCOL VALUATION METRICS</h2>
+                <div class="portal-meta-row">
+                    <span class="meta-calendar-icon">🏛️</span>
+                    <span class="meta-updated-text">Powered by <strong>DefiLlama</strong> & <strong>Token Terminal</strong> Analytics</span>
+                </div>
+                <p class="portal-desc-text">
+                    Comprehensive multi-chain Total Value Locked (TVL), protocol yields, financial statements, 30-day cumulative fee generation, and traditional equity-grade Price-to-Sales (P/S) multiples.
+                </p>
+            </section>
+
+            <!-- 1. DEFILLAMA TVL & MULTI-CHAIN DOMINANCE -->
+            <section class="defi-card">
+                <div class="section-header-row">
+                    <div>
+                        <h3 class="section-heading-text">DefiLlama Multi-Chain Total Value Locked (TVL)</h3>
+                        <p class="section-heading-sub">Aggregate smart contract capital deposits across liquid staking, lending, bridges, and decentralized exchanges.</p>
+                    </div>
+                    <span class="badge-live-tab" style="padding:4px 8px;">Total TVL: $108.4 Billion</span>
+                </div>
+
+                <div class="defi-stat-grid">
+                    <div class="defi-stat-box">
+                        <span class="defi-stat-lbl">Global DeFi TVL</span>
+                        <span class="defi-stat-val">$108,420,000,000</span>
+                        <span class="defi-stat-sub">+3.4% 7D Inflow</span>
+                    </div>
+                    <div class="defi-stat-box">
+                        <span class="defi-stat-lbl">Ethereum TVL</span>
+                        <span class="defi-stat-val">$62,850,000,000</span>
+                        <span class="defi-stat-sub">57.9% Dominance</span>
+                    </div>
+                    <div class="defi-stat-box">
+                        <span class="defi-stat-lbl">Solana TVL</span>
+                        <span class="defi-stat-val">$8,940,000,000</span>
+                        <span class="defi-stat-sub">+18.2% 30D Growth</span>
+                    </div>
+                    <div class="defi-stat-box">
+                        <span class="defi-stat-lbl">Daily DEX Volume</span>
+                        <span class="defi-stat-val">$5,140,000,000</span>
+                        <span class="defi-stat-sub">Across 42 Chains</span>
+                    </div>
+                </div>
+
+                <!-- Chain Dominance Progress Bar -->
+                <div class="chain-bar-wrap">
+                    <div style="font-size:12px; font-weight:700; margin-bottom:8px;">Blockchain TVL Distribution:</div>
+                    <div class="chain-progress-multi">
+                        <div style="width: 58%; background: #6366f1;" title="Ethereum 58%"></div>
+                        <div style="width: 8.5%; background: #14f195;" title="Solana 8.5%"></div>
+                        <div style="width: 7.5%; background: #ef4444;" title="Tron 7.5%"></div>
+                        <div style="width: 5.2%; background: #f59e0b;" title="BSC 5.2%"></div>
+                        <div style="width: 3.2%; background: #2563eb;" title="Arbitrum 3.2%"></div>
+                        <div style="width: 2.8%; background: #0284c7;" title="Base 2.8%"></div>
+                        <div style="width: 14.8%; background: #94a3b8;" title="Other 14.8%"></div>
+                    </div>
+                    <div class="chain-bar-legend">
+                        <div class="legend-item"><span class="legend-color" style="background:#6366f1;"></span> Ethereum: $62.8B (58%)</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#14f195;"></span> Solana: $8.9B (8.5%)</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#ef4444;"></span> Tron: $8.2B (7.5%)</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#f59e0b;"></span> BSC: $5.4B (5.2%)</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#2563eb;"></span> Arbitrum: $3.2B (3.2%)</div>
+                        <div class="legend-item"><span class="legend-color" style="background:#0284c7;"></span> Base: $2.8B (2.8%)</div>
+                    </div>
+                </div>
+
+                <!-- Top DeFi Protocols Table -->
+                <div class="table-responsive-box">
+                    <table class="defi-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Protocol</th>
+                                <th>Category</th>
+                                <th>Chains</th>
+                                <th>TVL (USD)</th>
+                                <th>1D Change</th>
+                                <th>7D Change</th>
+                                <th>Yield (APY)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="defiProtocolsTable">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 2. TOKEN TERMINAL PROTOCOL FINANCIAL STATEMENTS & P/S VALUATIONS -->
+            <section class="defi-card">
+                <div class="section-header-row">
+                    <div>
+                        <h3 class="section-heading-text">Token Terminal Protocol Financials & P/S Ratios</h3>
+                        <p class="section-heading-sub">Measuring crypto protocols like traditional cash-flow businesses: 30D fees generated, net protocol revenue, and Price-to-Sales multiples.</p>
+                    </div>
+                    <span class="badge-live-tab" style="padding:4px 8px;">Wall Street Methodology</span>
+                </div>
+
+                <div class="table-responsive-box">
+                    <table class="defi-table">
+                        <thead>
+                            <tr>
+                                <th>Protocol</th>
+                                <th>30D Fees Generated</th>
+                                <th>30D Net Revenue</th>
+                                <th>Market Cap</th>
+                                <th>P/S Multiple</th>
+                                <th>P/E Multiple</th>
+                                <th>Valuation Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tokenTerminalTable">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Interactive Protocol Financial Breakdown Box -->
+                <div class="income-statement-box">
+                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+                        <div>
+                            <strong style="font-size:14px; color:#0f172a;">Income Statement Viewer:</strong>
+                            <span style="font-size:12px; color:var(--text-muted); margin-left:6px;">Select protocol to audit cash flows</span>
+                        </div>
+                        <select id="protocolSelectIncome" style="background:#ffffff; border:1px solid var(--border-dark); padding:5px 12px; border-radius:4px; font-size:12px; font-weight:700;">
+                            <option value="uniswap">Uniswap (DEX Protocol)</option>
+                            <option value="tether">Tether Ltd (Stablecoin Issuer)</option>
+                            <option value="ethereum">Ethereum Network (L1 Gas Fees)</option>
+                            <option value="lido">Lido DAO (Liquid Staking)</option>
+                            <option value="maker">MakerDAO / Sky (Lending Credit)</option>
+                        </select>
+                    </div>
+
+                    <div id="incomeStatementRows">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Right Worldwide Sidebar -->
+        <aside class="sidebar-column" id="worldwideSidebar">
+            <div class="sidebar-search-box">
+                <label for="currencySearchInput" class="sidebar-search-label">Country & Currency Search:</label>
+                <input type="text" id="currencySearchInput" class="sidebar-search-input" placeholder="Type country or currency...">
+            </div>
+
+            <div class="sidebar-blue-banner">
+                <span>Crypto Prices Worldwide</span>
+            </div>
+
+            <div class="worldwide-crypto-list" id="worldwideCryptoList">
+                <!-- Dynamically populated -->
+            </div>
+
+            <div class="sidebar-info-box">
+                <h4 class="info-box-title">DeFi Valuation Concepts</h4>
+                <p class="info-box-p">
+                    <strong>Total Value Locked (TVL)</strong>: Measure of total collateralized capital securing smart contracts.<br>
+                    <strong>Price-to-Sales (P/S)</strong>: Market Cap divided by annualized protocol revenue. Lower P/S indicates more attractive cash flow generation.<br>
+                    <strong>Supply-Side Fees</strong>: Portion of revenue distributed to liquidity providers and stakers.
+                </p>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Chart Modal Overlay -->
+    <div class="modal-overlay" id="chartModalOverlay">
+        <div class="modal chart-modal-box" id="chartModal">
+            <button class="modal-close" id="chartModalClose">&times;</button>
+            <div class="chart-modal-header" id="chartModalHeader">
+                <div class="chart-modal-coin">
+                    <img id="modalCoinImg" src="" alt="Coin">
+                    <div>
+                        <div class="chart-modal-title"><span id="modalCoinName">Bitcoin</span> (<span id="modalCoinSymbol">BTC</span>)</div>
+                        <div class="chart-modal-rank" id="modalCoinRank">Rank #1</div>
+                    </div>
+                </div>
+                <div class="chart-modal-price-wrap">
+                    <div class="chart-modal-price" id="modalCoinPrice">$74,850.00</div>
+                    <span class="chart-modal-change" id="modalCoinChange">+2.45% (24h)</span>
+                </div>
+            </div>
+            <div class="chart-timeframe-bar">
+                <button class="tf-btn active" data-tf="24h">24H</button>
+                <button class="tf-btn" data-tf="7d">7D</button>
+                <button class="tf-btn" data-tf="30d">30D</button>
+                <button class="tf-btn" data-tf="90d">90D</button>
+                <button class="tf-btn" data-tf="1y">1Y</button>
+            </div>
+            <div class="interactive-chart-canvas-wrap">
+                <canvas id="modalInteractiveCanvas" width="800" height="320"></canvas>
+                <div class="chart-crosshair-tooltip" id="chartTooltip" style="display:none;"></div>
+            </div>
+            <div class="modal-stats" id="modalStatsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="lpg-footer">
+        <div class="container footer-inner">
+            <div class="footer-info">
+                <h4 class="footer-brand">LivePriceOfCrypto.com</h4>
+                <p>Decentralized Finance (DeFi) analytics, DefiLlama multi-chain TVL, Token Terminal financial statements, and protocol valuation ratios.</p>
+            </div>
+            <div class="footer-meta">
+                <p>DeFi Coverage: <strong style="color:#059669">● 3,400+ Protocols</strong></p>
+                <p class="footer-disclaimer">Disclaimer: All financial statements and revenue ratios provided for analytical purposes only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // DefiLlama Protocols Dataset
+        const DEFI_PROTOCOLS = [
+            { rank: 1, name: 'Lido', category: 'Liquid Staking', chains: 'Ethereum, Solana, Polygon', tvl: 28450000000, change1d: 1.8, change7d: 5.4, apy: '3.4% stETH' },
+            { rank: 2, name: 'Aave', category: 'Lending & Borrowing', chains: 'Ethereum, Arbitrum, Base, Avalanche', tvl: 14820000000, change1d: 2.4, change7d: 8.9, apy: '5.2% USDC' },
+            { rank: 3, name: 'EigenLayer', category: 'Restaking', chains: 'Ethereum', tvl: 12150000000, change1d: 0.9, change7d: 3.1, apy: '4.8% Points' },
+            { rank: 4, name: 'Maker / Sky', category: 'CDP / Stablecoin', chains: 'Ethereum', tvl: 8940000000, change1d: -0.4, change7d: 1.2, apy: '6.0% sUSDS' },
+            { rank: 5, name: 'Uniswap', category: 'Decentralized Exchange', chains: 'Multi-chain (15+)', tvl: 5820000000, change1d: 3.1, change7d: 7.8, apy: '12.4% Pool' },
+            { rank: 6, name: 'Pendle', category: 'Yield Trading', chains: 'Ethereum, Arbitrum, Mantle', tvl: 3950000000, change1d: 4.5, change7d: 14.2, apy: '14.8% Fixed' },
+            { rank: 7, name: 'Raydium', category: 'Solana DEX & AMM', chains: 'Solana', tvl: 1850000000, change1d: 6.8, change7d: 22.4, apy: '28.5% AMM' },
+            { rank: 8, name: 'Ethena', category: 'Delta-Neutral Yield', chains: 'Ethereum', tvl: 2840000000, change1d: 1.1, change7d: 6.2, apy: '11.8% sUSDe' }
+        ];
+
+        function renderDefiProtocols() {
+            const tbody = document.getElementById('defiProtocolsTable');
+            if (!tbody) return;
+
+            tbody.innerHTML = DEFI_PROTOCOLS.map(p => `
+                <tr>
+                    <td style="font-family:var(--font-mono); font-weight:700;">#${p.rank}</td>
+                    <td class="protocol-logo-cell">
+                        <span>${p.name}</span>
+                    </td>
+                    <td><span class="cat-badge">${p.category}</span></td>
+                    <td style="font-size:11.5px; color:var(--text-muted);">${p.chains}</td>
+                    <td style="font-family:var(--font-mono); font-weight:700;">$${(p.tvl / 1e9).toFixed(2)}B</td>
+                    <td style="font-family:var(--font-mono); color:${p.change1d >= 0 ? 'var(--green)' : 'var(--red)'}; font-weight:700;">
+                        ${p.change1d >= 0 ? '+' : ''}${p.change1d}%
+                    </td>
+                    <td style="font-family:var(--font-mono); color:${p.change7d >= 0 ? 'var(--green)' : 'var(--red)'}; font-weight:700;">
+                        ${p.change7d >= 0 ? '+' : ''}${p.change7d}%
+                    </td>
+                    <td style="font-family:var(--font-mono); color:var(--green); font-weight:700;">${p.apy}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Token Terminal Financial Statements Dataset
+        const TOKEN_TERMINAL_DATA = [
+            { name: 'Tether (USDT)', fees30d: '$345,000,000', rev30d: '$345,000,000', mcap: '$120.4B', ps: '29.1x', pe: '29.1x', rating: 'Undervalued', class: 'undervalued' },
+            { name: 'Ethereum', fees30d: '$184,500,000', rev30d: '$148,000,000', mcap: '$342.0B', ps: '192.5x', pe: '240.2x', rating: 'Fair Value', class: 'fair' },
+            { name: 'Uniswap', fees30d: '$98,400,000', rev30d: '$12,800,000', mcap: '$4.9B', ps: '31.8x', pe: '38.2x', rating: 'Undervalued', class: 'undervalued' },
+            { name: 'Lido DAO', fees30d: '$84,200,000', rev30d: '$8,420,000', mcap: '$1.15B', ps: '11.4x', pe: '14.2x', rating: 'Undervalued', class: 'undervalued' },
+            { name: 'MakerDAO (Sky)', fees30d: '$24,800,000', rev30d: '$18,600,000', mcap: '$1.49B', ps: '6.7x', pe: '8.4x', rating: 'Deep Value', class: 'undervalued' },
+            { name: 'Raydium', fees30d: '$48,500,000', rev30d: '$5,820,000', mcap: '$1.15B', ps: '16.4x', pe: '19.8x', rating: 'Undervalued', class: 'undervalued' }
+        ];
+
+        function renderTokenTerminalTable() {
+            const tbody = document.getElementById('tokenTerminalTable');
+            if (!tbody) return;
+
+            tbody.innerHTML = TOKEN_TERMINAL_DATA.map(t => `
+                <tr>
+                    <td><strong>${t.name}</strong></td>
+                    <td style="font-family:var(--font-mono); font-weight:700;">${t.fees30d}</td>
+                    <td style="font-family:var(--font-mono); color:var(--green); font-weight:700;">${t.rev30d}</td>
+                    <td style="font-family:var(--font-mono);">${t.mcap}</td>
+                    <td style="font-family:var(--font-mono); font-weight:700;">${t.ps}</td>
+                    <td style="font-family:var(--font-mono); font-weight:700;">${t.pe}</td>
+                    <td><span class="ps-pill ${t.class}">${t.rating}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        // Protocol Income Statements
+        const PROTOCOL_INCOME_STATEMENTS = {
+            uniswap: [
+                { label: 'Gross Trading Fees (30D):', value: '$98,400,000' },
+                { label: 'Liquidity Provider Share (Supply-Side):', value: '-$85,600,000' },
+                { label: 'Protocol Net Revenue:', value: '$12,800,000' },
+                { label: 'Treasury & Tokenholder Accrual:', value: '$12,800,000', isTotal: true }
+            ],
+            tether: [
+                { label: 'Gross Interest on US Treasury Reserves (30D):', value: '$352,000,000' },
+                { label: 'Operational & Custodial Expenses:', value: '-$7,000,000' },
+                { label: 'Net Operating Profit:', value: '$345,000,000' },
+                { label: 'Retained Earnings Added to Capital Cushion:', value: '$345,000,000', isTotal: true }
+            ],
+            ethereum: [
+                { label: 'Total Transaction Gas Fees (30D):', value: '$184,500,000' },
+                { label: 'EIP-1559 ETH Burned (Supply Reduction):', value: '-$148,000,000' },
+                { label: 'Validator Tips & Priority Fees:', value: '$36,500,000' },
+                { label: 'Net Economic Value Accrued to ETH Holders:', value: '$184,500,000', isTotal: true }
+            ],
+            lido: [
+                { label: 'Total Staking Rewards Generated (30D):', value: '$84,200,000' },
+                { label: 'Distributed to stETH Holders (90%):', value: '-$75,780,000' },
+                { label: 'Node Operator Split (5%):', value: '-$4,210,000' },
+                { label: 'Lido DAO Treasury Revenue (5%):', value: '$4,210,000', isTotal: true }
+            ],
+            maker: [
+                { label: 'Stability Fees & RWA Yields (30D):', value: '$24,800,000' },
+                { label: 'Dai Savings Rate (DSR) Paid to Depositors:', value: '-$6,200,000' },
+                { label: 'MakerDAO Net Protocol Profit:', value: '$18,600,000' },
+                { label: 'MKR Token Buyback & Burn Surplus:', value: '$18,600,000', isTotal: true }
+            ]
+        };
+
+        function renderIncomeStatement(protocolKey) {
+            const container = document.getElementById('incomeStatementRows');
+            const data = PROTOCOL_INCOME_STATEMENTS[protocolKey] || PROTOCOL_INCOME_STATEMENTS.uniswap;
+            if (!container) return;
+
+            container.innerHTML = data.map(item => `
+                <div class="income-row ${item.isTotal ? 'total' : ''}">
+                    <span>${item.label}</span>
+                    <strong style="font-family:var(--font-mono);">${item.value}</strong>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDefiProtocols();
+            renderTokenTerminalTable();
+            renderIncomeStatement('uniswap');
+
+            const select = document.getElementById('protocolSelectIncome');
+            if (select) {
+                select.addEventListener('change', (e) => {
+                    renderIncomeStatement(e.target.value);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
