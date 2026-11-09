@@ -2,16 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Price of Crypto | Real-Time Cryptocurrency Prices, News & Economic Calendar</title>
-    <meta name="description" content="Track live cryptocurrency prices, spot rates for Bitcoin and Ethereum, top gainers and losers, macroeconomic news affecting crypto, and daily economic calendar.">
-    <meta name="keywords" content="crypto prices, live crypto, bitcoin spot price, ethereum price, economic calendar, crypto market news, top gainers">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Live Price of Crypto | Real-Time Cryptocurrency Prices, Charts, News & Calendar</title>
+    <meta name="description" content="Track all world cryptocurrencies live with interactive charts, spot rates for Bitcoin and Ethereum, mobile-optimized top 5 cards, top gainers, and breaking news.">
+    <meta name="keywords" content="crypto prices, live crypto, bitcoin chart, ethereum price, crypto interactive chart, world crypto list, top gainers, crypto news">
     <link rel="canonical" href="https://livepriceofcrypto.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪙</text></svg>">
+    <!-- Structured Data for Google Webmaster / Search Console Instant Indexing -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Live Price Of Crypto",
+      "url": "https://livepriceofcrypto.com",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "All",
+      "description": "Real-time world cryptocurrency valuations, interactive multi-timeframe charts, whale order flow buyers vs sellers tracking, macroeconomic news, and daily economic calendar.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
 </head>
 <body data-theme="gold-dark">
 
@@ -23,11 +40,20 @@
                 <span class="market-status-text">LIVE MARKET TICKER</span>
                 <span class="market-clock" id="liveClock">00:00:00 UTC</span>
             </div>
+
+            <!-- Engaging Fear & Greed Index Widget -->
+            <div class="fear-greed-pill" id="fngWidget" title="Crypto Market Sentiment Index (0-100)">
+                <span class="fng-icon">📊</span>
+                <span class="fng-label">Sentiment:</span>
+                <strong class="fng-val" id="fngValue">--</strong>
+                <span class="fng-tag" id="fngClassification">Neutral</span>
+            </div>
+
             <div class="top-market-metrics" id="globalStats">
                 <span>Cryptos: <strong id="totalCryptos">--</strong></span>
                 <span>Market Cap: <strong id="totalMarketCap">--</strong></span>
-                <span>24h Volume: <strong id="totalVolume">--</strong></span>
-                <span>BTC Dominance: <strong id="btcDominance">--</strong></span>
+                <span>24h Vol: <strong id="totalVolume">--</strong></span>
+                <span>BTC Dom: <strong id="btcDominance">--</strong></span>
             </div>
             <div class="top-market-right">
                 <button class="theme-toggle-btn" id="themeToggle" title="Toggle Light / Dark Mode">
@@ -37,7 +63,7 @@
         </div>
     </div>
 
-    <!-- Main Navigation Header (livepriceofgold.com Style) -->
+    <!-- Main Navigation Header -->
     <header class="main-header">
         <div class="container header-inner">
             <div class="site-branding">
@@ -45,14 +71,15 @@
                     <div class="brand-icon">LC</div>
                     <div>
                         <h1 class="brand-name">LivePriceOfCrypto<span class="brand-tld">.com</span></h1>
-                        <span class="brand-sub">Real-Time Cryptocurrency Valuations & Financial Intelligence</span>
+                        <span class="brand-sub">World Cryptocurrency Valuations & Interactive Charts</span>
                     </div>
                 </a>
             </div>
             <nav class="header-nav">
                 <a href="#sectionSpot" class="nav-link active">Spot Rates</a>
-                <a href="#sectionGainersLosers" class="nav-link">Gainers & Losers</a>
-                <a href="#sectionPrices" class="nav-link">Market Board</a>
+                <a href="#sectionOrderFlow" class="nav-link">Whale Flow</a>
+                <a href="#sectionGainersLosers" class="nav-link">Movers</a>
+                <a href="#sectionPrices" class="nav-link">All Cryptos</a>
                 <a href="#sectionNews" class="nav-link">Market News</a>
                 <a href="#sectionCalendar" class="nav-link">Economic Calendar</a>
             </nav>
@@ -70,12 +97,12 @@
     <!-- Main Content Area -->
     <main class="container page-content">
 
-        <!-- 1. SPOT CRYPTO RATES (Top 5 Majors Highlighted - Bitcoin, Ethereum, Solana, BNB, XRP) -->
+        <!-- 1. SPOT CRYPTO RATES (Top 5 Majors - Mobile Compact Small Boxes) -->
         <section class="market-section" id="sectionSpot">
             <div class="section-header">
                 <div class="section-title-wrap">
-                    <span class="section-category">SPOT VALUATIONS</span>
-                    <h2 class="section-title-text">Major Cryptocurrency Spot Prices</h2>
+                    <span class="section-category">SPOT BENCHMARKS</span>
+                    <h2 class="section-title-text">Top 5 Cryptocurrency Rates</h2>
                 </div>
                 <div class="currency-selector-wrap">
                     <label for="currencySelect" class="currency-label">Currency:</label>
@@ -90,7 +117,7 @@
                 </div>
             </div>
 
-            <!-- Top 5 Highlight Spot Cards -->
+            <!-- Top 5 Highlight Spot Cards: Large on desktop, small compact swipeable boxes on mobile -->
             <div class="spot-cards-grid" id="majorCoinsGrid">
                 <div class="spot-card-skeleton"><div class="spinner"></div></div>
                 <div class="spot-card-skeleton"><div class="spinner"></div></div>
@@ -100,12 +127,99 @@
             </div>
         </section>
 
-        <!-- 2. TOP 5 GAINERS & TOP 5 LOSERS (24H MOMENTUM) -->
+        <!-- 2. WHALE & INSTITUTIONAL ORDER FLOW (Live Buyers vs Sellers) -->
+        <section class="market-section" id="sectionOrderFlow">
+            <div class="section-header">
+                <div class="section-title-wrap">
+                    <span class="section-category">INSTITUTIONAL LIQUIDITY RADAR</span>
+                    <h2 class="section-title-text">Whale Orders: Buyers vs Sellers</h2>
+                    <p class="section-subtitle">Real-time tracking of institutional order books, high-volume whale accumulation, and market buy/sell pressure.</p>
+                </div>
+                <div class="flow-net-badge">
+                    <span class="flow-dot pulse">●</span>
+                    <span id="netBiasText">Institutional Bias: <strong style="color:var(--green)">Strong Buy Accumulation (58.4%)</strong></span>
+                </div>
+            </div>
+
+            <!-- Global Buy vs Sell Pressure Meter -->
+            <div class="order-pressure-card">
+                <div class="pressure-meter-header">
+                    <div class="pressure-label buyers">
+                        <span class="pressure-name">🟢 Whales Buying</span>
+                        <strong class="pressure-pct" id="globalBuyerPct">58.4%</strong>
+                    </div>
+                    <div class="pressure-mid-stats">
+                        <span class="pressure-vol" id="whaleInflowVol">24h Net Whale Inflow: +$348.5M</span>
+                    </div>
+                    <div class="pressure-label sellers">
+                        <strong class="pressure-pct" id="globalSellerPct">41.6%</strong>
+                        <span class="pressure-name">🔴 Whales Selling</span>
+                    </div>
+                </div>
+                <div class="pressure-bar-track">
+                    <div class="pressure-bar-fill-buy" id="pressureBarBuy" style="width: 58.4%;"></div>
+                    <div class="pressure-bar-fill-sell" id="pressureBarSell" style="width: 41.6%;"></div>
+                </div>
+            </div>
+
+            <!-- Two-Column Order Flow Grid: Heavy Buyers vs Heavy Sellers -->
+            <div class="orderflow-grid">
+                <!-- Top Buying / Accumulation Cryptos -->
+                <div class="orderflow-card buy-flow-card">
+                    <div class="orderflow-header">
+                        <div class="flow-header-left">
+                            <span class="flow-icon">🐋</span>
+                            <div>
+                                <h3 class="flow-title">Whale Accumulation (Heavy Buyers)</h3>
+                                <span class="flow-desc">Cryptos with strongest institutional buy volume</span>
+                            </div>
+                        </div>
+                        <span class="trend-badge bullish">ACCUMULATION</span>
+                    </div>
+                    <div class="orderflow-list" id="whaleBuyersList">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+
+                <!-- Top Selling / Distribution Cryptos -->
+                <div class="orderflow-card sell-flow-card">
+                    <div class="orderflow-header">
+                        <div class="flow-header-left">
+                            <span class="flow-icon">🦈</span>
+                            <div>
+                                <h3 class="flow-title">Whale Distribution (Heavy Sellers)</h3>
+                                <span class="flow-desc">Cryptos facing active institutional selloff</span>
+                            </div>
+                        </div>
+                        <span class="trend-badge bearish">DISTRIBUTION</span>
+                    </div>
+                    <div class="orderflow-list" id="whaleSellersList">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Tick-by-Tick Large Whale Alert Stream -->
+            <div class="whale-alerts-box">
+                <div class="whale-alerts-header">
+                    <div class="whale-radar-title-wrap">
+                        <span class="whale-radar-icon">📡</span>
+                        <span class="whale-radar-title">LIVE LARGE-ORDER RADAR ($500,000+ TRADES)</span>
+                    </div>
+                    <span class="whale-radar-badge">● STREAMING</span>
+                </div>
+                <div class="whale-trades-stream" id="whaleTradesStream">
+                    <!-- Populated dynamically with live real-time trades -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. TOP 5 GAINERS & TOP 5 LOSERS (24H MOMENTUM) -->
         <section class="market-section" id="sectionGainersLosers">
             <div class="section-header">
                 <div class="section-title-wrap">
                     <span class="section-category">MARKET MOMENTUM</span>
-                    <h2 class="section-title-text">Top Gainers & Losers (24h)</h2>
+                    <h2 class="section-title-text">Top 5 Gainers & Top 5 Losers (24h)</h2>
                 </div>
             </div>
 
@@ -136,19 +250,30 @@
             </div>
         </section>
 
-        <!-- 3. CRYPTOCURRENCY MARKET BOARD (Top 10 Default + Show More Button) -->
+        <!-- 3. ALL WORLD CRYPTOCURRENCIES (With Category Filters & Interactive Charts for ALL coins) -->
         <section class="market-section" id="sectionPrices">
             <div class="section-header">
                 <div class="section-title-wrap">
-                    <span class="section-category">VALUATION INDEX</span>
-                    <h2 class="section-title-text">Cryptocurrency Valuation Board (<span id="tableCountBadge">Top 10 Assets</span>)</h2>
+                    <span class="section-category">GLOBAL ASSET DIRECTORY</span>
+                    <h2 class="section-title-text">World Cryptocurrency Valuation Index (<span id="tableCountBadge">Top 10 Assets</span>)</h2>
+                    <p class="section-subtitle">Comprehensive pricing, market cap, and live interactive charts for world digital currencies.</p>
                 </div>
                 <div class="search-filter-wrap">
                     <div class="table-search-input">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-                        <input type="text" id="searchInput" placeholder="Search asset name or symbol..." autocomplete="off">
+                        <input type="text" id="searchInput" placeholder="Search from world cryptos (e.g., BTC, PEPE, SUI)..." autocomplete="off">
                     </div>
                 </div>
+            </div>
+
+            <!-- Category Pills Bar (Highly Engaging!) -->
+            <div class="category-pills-bar">
+                <button class="cat-pill active" data-category="all">🔥 All World Cryptos</button>
+                <button class="cat-pill" data-category="l1">⚡ Layer 1</button>
+                <button class="cat-pill" data-category="defi">🦄 DeFi</button>
+                <button class="cat-pill" data-category="meme">🐸 Meme Coins</button>
+                <button class="cat-pill" data-category="ai">🤖 AI & Data</button>
+                <button class="cat-pill" data-category="gainers">🚀 Big Movers</button>
             </div>
 
             <!-- Table Container -->
@@ -164,7 +289,7 @@
                             <th class="th-change sortable" data-sort="price_change_percentage_7d_in_currency">7d %</th>
                             <th class="th-volume sortable" data-sort="total_volume">24h Volume</th>
                             <th class="th-mcap sortable" data-sort="market_cap">Market Cap</th>
-                            <th class="th-sparkline">7D Trend</th>
+                            <th class="th-sparkline">Interactive Chart</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -174,7 +299,7 @@
 
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p>Syncing market data...</p>
+                <p>Syncing world market data...</p>
             </div>
 
             <div class="error-state" id="errorState" style="display:none;">
@@ -186,18 +311,18 @@
             <div class="table-expand-bar">
                 <button class="btn-expand-table" id="btnToggleExpand">
                     <span id="expandBtnIcon">▼</span>
-                    <span id="expandBtnText">Show More (Expand to Top 100 Assets)</span>
+                    <span id="expandBtnText">Show More (Expand to Full World List)</span>
                 </button>
             </div>
         </section>
 
-        <!-- 4. MACRO & MARKET NEWS (Images on Every Card + Internal Article Page Redirect) -->
+        <!-- 4. MACRO & MARKET NEWS (Images on Every Card + In-Site Article Page Redirect) -->
         <section class="market-section" id="sectionNews">
             <div class="section-header">
                 <div class="section-title-wrap">
                     <span class="section-category">MARKET INTELLIGENCE</span>
                     <h2 class="section-title-text">Macroeconomic & Cryptocurrency News</h2>
-                    <p class="section-subtitle">Real-time reports on global interest rates, inflation data, regulations, and market liquidity affecting digital assets.</p>
+                    <p class="section-subtitle">Real-time dispatches on Federal Reserve interest rates, inflation metrics, regulations, and market liquidity affecting digital assets.</p>
                 </div>
                 <div class="news-refresh-box">
                     <span class="refresh-countdown">Sync: <strong id="newsTimer">60s</strong></span>
@@ -238,24 +363,84 @@
 
     </main>
 
-    <!-- Coin Detail Modal -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal market-modal" id="coinModal">
-            <button class="modal-close" id="modalClose">&times;</button>
-            <div class="modal-content" id="modalContent"></div>
+    <!-- INTERACTIVE CHART & DETAIL MODAL (Opens for ANY coin!) -->
+    <div class="modal-overlay" id="chartModalOverlay">
+        <div class="modal chart-modal-box" id="chartModal">
+            <button class="modal-close" id="chartModalClose">&times;</button>
+            <div class="chart-modal-header" id="chartModalHeader">
+                <div class="chart-modal-coin">
+                    <img id="modalCoinImg" src="" alt="Coin">
+                    <div>
+                        <div class="chart-modal-title"><span id="modalCoinName">Bitcoin</span> (<span id="modalCoinSymbol">BTC</span>)</div>
+                        <div class="chart-modal-rank" id="modalCoinRank">Rank #1</div>
+                    </div>
+                </div>
+                <div class="chart-modal-price-wrap">
+                    <div class="chart-modal-price" id="modalCoinPrice">$74,850.00</div>
+                    <span class="chart-modal-change" id="modalCoinChange">+2.45% (24h)</span>
+                </div>
+            </div>
+
+            <!-- Timeframe Selector -->
+            <div class="chart-timeframe-bar">
+                <button class="tf-btn active" data-tf="24h">24H</button>
+                <button class="tf-btn" data-tf="7d">7D</button>
+                <button class="tf-btn" data-tf="30d">30D</button>
+                <button class="tf-btn" data-tf="90d">90D</button>
+                <button class="tf-btn" data-tf="1y">1Y</button>
+            </div>
+
+            <!-- Interactive Canvas Chart Area -->
+            <div class="interactive-chart-canvas-wrap">
+                <canvas id="modalInteractiveCanvas" width="800" height="320"></canvas>
+                <div class="chart-crosshair-tooltip" id="chartTooltip" style="display:none;"></div>
+            </div>
+
+            <!-- Coin Market Data Grid -->
+            <div class="modal-stats" id="modalStatsGrid">
+                <!-- Dynamically populated -->
+            </div>
         </div>
     </div>
 
-    <!-- Main Footer (livepriceofgold.com Style) -->
+    <!-- Mobile Bottom Floating Quick Navigation Bar -->
+    <div class="mobile-bottom-bar">
+        <a href="#sectionSpot" class="mobile-nav-btn active">
+            <span class="mob-icon">⭐</span>
+            <span>Top 5</span>
+        </a>
+        <a href="#sectionOrderFlow" class="mobile-nav-btn">
+            <span class="mob-icon">🐋</span>
+            <span>Whales</span>
+        </a>
+        <a href="#sectionGainersLosers" class="mobile-nav-btn">
+            <span class="mob-icon">🚀</span>
+            <span>Movers</span>
+        </a>
+        <a href="#sectionPrices" class="mobile-nav-btn">
+            <span class="mob-icon">📊</span>
+            <span>Market</span>
+        </a>
+        <a href="#sectionNews" class="mobile-nav-btn">
+            <span class="mob-icon">📰</span>
+            <span>News</span>
+        </a>
+        <a href="#sectionCalendar" class="mobile-nav-btn">
+            <span class="mob-icon">📅</span>
+            <span>Calendar</span>
+        </a>
+    </div>
+
+    <!-- Main Footer -->
     <footer class="main-footer">
         <div class="container footer-inner">
             <div class="footer-info">
                 <h4 class="footer-brand">LivePriceOfCrypto.com</h4>
-                <p>Independent real-time cryptocurrency valuation index, daily economic calendar, and financial market intelligence.</p>
+                <p>Independent real-time cryptocurrency valuation index, interactive charts, and financial market intelligence.</p>
             </div>
             <div class="footer-meta">
                 <p>Spot Broadcast: <strong style="color:var(--green)">● Connected</strong></p>
-                <p>Data Partners: Global Crypto Exchanges & Financial News Feeds</p>
+                <p>Coverage: World Cryptocurrencies & Macroeconomic Events</p>
                 <p class="footer-disclaimer">Disclaimer: All rates and market data provided for informational purposes only. Not financial advice.</p>
             </div>
         </div>
