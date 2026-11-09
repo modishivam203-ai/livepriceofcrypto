@@ -6,60 +6,36 @@
    - Fear & Greed Index Sentiment Gauge & Macro News
    ======================================================== */
 
-:root, [data-theme="gold-dark"] {
-    --bg-page: #0b111e;
-    --bg-card: #121c2e;
-    --bg-surface: #18253d;
-    --bg-hover: #1f2f4c;
-    --bg-input: #121c2e;
-    --border: #233554;
-    --border-light: #2e4369;
+:root, [data-theme="gold-light"] {
+    --bg-page: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-surface: #f1f5f9;
+    --bg-hover: #e2e8f0;
+    --bg-input: #ffffff;
+    --border: #e2e8f0;
+    --border-light: #cbd5e1;
     --border-accent: #d97706;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
     --text-muted: #64748b;
-    --gold: #d97706;
-    --gold-light: #f59e0b;
-    --gold-bg: rgba(217, 119, 6, 0.12);
-    --green: #10b981;
-    --green-bg: rgba(16, 185, 129, 0.15);
-    --green-flash: rgba(16, 185, 129, 0.35);
-    --red: #f43f5e;
-    --red-bg: rgba(244, 63, 94, 0.15);
-    --red-flash: rgba(244, 63, 94, 0.35);
-    --orange: #f59e0b;
-    --yellow: #eab308;
+    --gold: #b45309;
+    --gold-light: #d97706;
+    --gold-bg: rgba(180, 83, 9, 0.08);
+    --green: #059669;
+    --green-bg: rgba(5, 150, 105, 0.12);
+    --green-flash: rgba(5, 150, 105, 0.25);
+    --red: #dc2626;
+    --red-bg: rgba(220, 38, 38, 0.12);
+    --red-flash: rgba(220, 38, 38, 0.25);
+    --orange: #ea580c;
+    --yellow: #ca8a04;
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-mono: 'JetBrains Mono', 'Courier New', monospace;
     --font-serif: 'Cinzel', 'Playfair Display', 'Merriweather', Georgia, serif;
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
-    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme="gold-light"] {
-    --bg-page: #f8fafc;
-    --bg-card: #ffffff;
-    --bg-surface: #f1f5f9;
-    --bg-hover: #e2e8f0;
-    --bg-input: #ffffff;
-    --border: #cbd5e1;
-    --border-light: #94a3b8;
-    --border-accent: #b45309;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #64748b;
-    --gold: #b45309;
-    --gold-light: #d97706;
-    --gold-bg: rgba(180, 83, 9, 0.1);
-    --green: #059669;
-    --green-bg: rgba(5, 150, 105, 0.12);
-    --green-flash: rgba(5, 150, 105, 0.25);
-    --red: #e11d48;
-    --red-bg: rgba(225, 29, 72, 0.12);
-    --red-flash: rgba(225, 29, 72, 0.25);
-    --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.06);
+    --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 *, *::before, *::after {
@@ -1510,7 +1486,7 @@ body {
     position: absolute;
     top: 14px;
     left: 14px;
-    background: rgba(18, 28, 46, 0.94);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--gold);
@@ -1520,7 +1496,7 @@ body {
     font-size: 0.75rem;
     color: var(--text-primary);
     pointer-events: none;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
     z-index: 10;
     transition: opacity 0.15s ease;
 }
@@ -1528,7 +1504,7 @@ body {
 .chart-crosshair-tooltip .tooltip-price {
     font-size: 0.95rem;
     font-weight: 700;
-    color: var(--gold-light);
+    color: var(--text-primary);
 }
 
 .chart-crosshair-tooltip .tooltip-date {
@@ -1560,7 +1536,7 @@ body {
 
 .btn-chart-view:hover {
     background: var(--gold);
-    color: #0b111e;
+    color: #ffffff;
     border-color: var(--gold);
     transform: scale(1.05);
 }
@@ -1611,10 +1587,11 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(18, 28, 46, 0.95);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-top: 1px solid var(--border);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
     z-index: 150;
     padding: 6px 0;
     justify-content: space-around;
@@ -1704,6 +1681,10 @@ body {
 }
 
 @media (max-width: 600px) {
+    .container { padding: 0 12px; }
+    .page-content { padding-top: 14px; }
+    body { padding-bottom: 64px; }
+
     /* Enable App-Like Mobile Bottom Bar */
     .mobile-bottom-bar { display: flex; }
 

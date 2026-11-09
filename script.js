@@ -198,11 +198,10 @@ let whaleTradeCounter = 0;
 
 // ─── Initialization ───
 document.addEventListener('DOMContentLoaded', () => {
-    initTheme();
     setupEventListeners();
     startClock();
 
-    // 1. Instant Render from Curated Baseline Dataset (0.001s render)
+    // 1. Instant Render from Curated Baseline Dataset (0.001s instant paint)
     renderInitialData();
 
     // 2. Fetch fresh prices from Binance REST & background CoinGecko
@@ -309,43 +308,8 @@ async function fetchFearAndGreedIndex() {
     }
 }
 
-// ─── Theme Management (livepriceofgold.com Palette) ───
-function initTheme() {
-    const saved = localStorage.getItem('theme') || 'gold-dark';
-    document.body.setAttribute('data-theme', saved);
-    updateThemeButton(saved);
-}
-
-function toggleTheme() {
-    const current = document.body.getAttribute('data-theme') || 'gold-dark';
-    const next = current === 'gold-dark' ? 'gold-light' : 'gold-dark';
-    document.body.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    updateThemeButton(next);
-
-    // Re-render chart if modal open
-    if (activeModalCoin && chartModalOverlay && chartModalOverlay.classList.contains('active')) {
-        renderInteractiveChart(activeModalCoin, activeTimeframe);
-    }
-
-    calendarWidgetLoaded = false;
-    const container = document.getElementById('economicCalendarWidget');
-    if (container) {
-        container.innerHTML = '<div class="tradingview-widget-container__widget" style="width: 100%; height: 750px;"></div>';
-        loadEconomicCalendarWidget();
-    }
-}
-
-function updateThemeButton(theme) {
-    if (themeBtnIcon) {
-        themeBtnIcon.textContent = theme === 'gold-dark' ? '☀️ Light' : '🌙 Dark';
-    }
-}
-
 // ─── Event Listeners ───
 function setupEventListeners() {
-    if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-
     if (searchInput) {
         searchInput.addEventListener('input', debounce(filterTable, 200));
     }
@@ -475,7 +439,7 @@ function loadEconomicCalendarWidget() {
     script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-events.js';
     script.async = true;
     script.innerHTML = JSON.stringify({
-        "colorTheme": isLight ? "light" : "dark",
+        "colorTheme": "light",
         "isTransparent": false,
         "width": "100%",
         "height": "750",
