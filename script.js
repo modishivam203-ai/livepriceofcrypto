@@ -1,8 +1,9 @@
 /* ========================================================
-   LivePriceOfCrypto.com — Complete JavaScript
-   - Real-Time 1s Price Streaming via Binance WebSocket
-   - CoinGecko REST API for Coin Data, Rankings & Sparklines
-   - Automated Live Breaking Crypto Blog Feed (CryptoCompare API)
+   LivePriceOfCrypto.com — Vintage Financial Gazette JS
+   - 1-Second Binance WebSocket Real-Time Broadcast Stream
+   - Forex Factory Style Daily Economic Events Calendar
+   - Automated Live Breaking Crypto News Wire (Every 60s)
+   - Vintage Newspaper / Terminal Dark & Light Modes
    ======================================================== */
 
 // ─── Configuration ───
@@ -23,6 +24,7 @@ let currencyRates = { usd: 1, inr: 86.5, eur: 0.92, gbp: 0.79, jpy: 154.0, btc: 
 let wsSocket = null;
 let blogCountdown = BLOG_REFRESH_INTERVAL;
 let blogTimerInterval = null;
+let calendarWidgetLoaded = false;
 
 // ─── Currency Symbols ───
 const currencySymbols = {
@@ -44,19 +46,17 @@ const pageInfo = document.getElementById('pageInfo');
 const lastUpdated = document.getElementById('lastUpdated');
 const backToTop = document.getElementById('backToTop');
 const themeToggle = document.getElementById('themeToggle');
+const themeToggleIcon = document.getElementById('themeToggleIcon');
 const modalOverlay = document.getElementById('modalOverlay');
 const modalClose = document.getElementById('modalClose');
 const modalContent = document.getElementById('modalContent');
 const blogFeedGrid = document.getElementById('blogFeedGrid');
 const blogTimerEl = document.getElementById('blogTimer');
 const btnRefreshBlog = document.getElementById('btnRefreshBlog');
-const wsStatusBadge = document.getElementById('wsStatusBadge');
-const wsStatusText = document.getElementById('wsStatusText');
 
 // ─── Initialization ───
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
-    setupTabs();
     setupEventListeners();
     fetchGlobalData();
     fetchExchangeRates();
@@ -64,35 +64,48 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchLiveBlog();
     initBinanceWebSocket();
     startBlogTimer();
+    loadEconomicCalendarWidget();
+    initGazetteDate();
 });
 
-// ─── Tab Switching ───
-function setupTabs() {
-    const tabs = document.querySelectorAll('.nav-tab');
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
-
-            tab.classList.add('active');
-            const targetId = tab.dataset.tab;
-            const targetView = document.getElementById(targetId);
-            if (targetView) targetView.classList.add('active');
-        });
-    });
+// ─── Date Banner ───
+function initGazetteDate() {
+    const el = document.getElementById('gazetteDate');
+    if (!el) return;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+    }).toUpperCase();
+    el.textContent = `DAILY FINANCIAL GAZETTE • ${dateStr} • REAL-TIME WIRE`;
 }
 
-// ─── Theme Management ───
+// ─── Theme Management (Vintage Dark / Vintage Light) ───
 function initTheme() {
-    const saved = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', saved);
+    const saved = localStorage.getItem('theme') || 'vintage-dark';
+    document.body.setAttribute('data-theme', saved);
+    updateThemeButtonText(saved);
 }
 
 function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
+    const current = document.body.getAttribute('data-theme') || 'vintage-dark';
+    const next = current === 'vintage-dark' ? 'vintage-light' : 'vintage-dark';
+    document.body.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
+    updateThemeButtonText(next);
+
+    // Refresh TradingView calendar widget with matching theme
+    calendarWidgetLoaded = false;
+    const container = document.getElementById('economicCalendarWidget');
+    if (container) {
+        container.innerHTML = '<div class="tradingview-widget-container__widget" style="width: 100%; height: 750px;"></div>';
+        loadEconomicCalendarWidget();
+    }
+}
+
+function updateThemeButtonText(theme) {
+    if (themeToggleIcon) {
+        themeToggleIcon.textContent = theme === 'vintage-dark' ? '📜 Classic Light' : '🏛️ Vintage Dark';
+    }
 }
 
 // ─── Event Listeners ───
@@ -155,11 +168,39 @@ function setupEventListeners() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    // Manual Refresh Blog
-    btnRefreshBlog.addEventListener('click', () => {
-        fetchLiveBlog();
-        resetBlogTimer();
+    // Manual Refresh News
+    if (btnRefreshBlog) {
+        btnRefreshBlog.addEventListener('click', () => {
+            fetchLiveBlog();
+            resetBlogTimer();
+        });
+    }
+}
+
+// ─── Forex Factory Style Daily Economic Calendar ───
+function loadEconomicCalendarWidget() {
+    if (calendarWidgetLoaded) return;
+    calendarWidgetLoaded = true;
+
+    const container = document.getElementById('economicCalendarWidget');
+    if (!container) return;
+
+    const isLight = document.body.getAttribute('data-theme') === 'vintage-light';
+
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-events.js';
+    script.async = true;
+    script.innerHTML = JSON.stringify({
+        "colorTheme": isLight ? "light" : "dark",
+        "isTransparent": false,
+        "width": "100%",
+        "height": "750",
+        "locale": "en",
+        "importanceFilter": "-1,0,1",
+        "currencyFilter": "USD,EUR,GBP,JPY,CNY,INR"
     });
+    container.appendChild(script);
 }
 
 // ─── Exchange Rates for Currency Conversion ───
@@ -249,8 +290,6 @@ function initBinanceWebSocket() {
 
         wsSocket.onopen = () => {
             console.log('✅ Connected to Binance 1-second WebSocket stream');
-            if (wsStatusText) wsStatusText.textContent = 'Live Feed (1s)';
-            if (wsStatusBadge) wsStatusBadge.style.borderColor = 'rgba(34, 197, 94, 0.4)';
         };
 
         wsSocket.onmessage = (event) => {
@@ -264,13 +303,11 @@ function initBinanceWebSocket() {
         };
 
         wsSocket.onerror = (err) => {
-            console.warn('WebSocket error, falling back to polling:', err);
-            if (wsStatusText) wsStatusText.textContent = 'Reconnecting...';
+            console.warn('WebSocket error, retrying in 5s:', err);
         };
 
         wsSocket.onclose = () => {
             console.log('WebSocket closed, attempting reconnect in 5s...');
-            if (wsStatusText) wsStatusText.textContent = 'Reconnecting...';
             setTimeout(initBinanceWebSocket, 5000);
         };
     } catch (e) {
@@ -286,7 +323,6 @@ function handleLiveTickers(tickers) {
     let tickerMap = new Map();
 
     tickers.forEach(t => {
-        // e.g. s = "BTCUSDT", c = current close price
         if (t.s && t.s.endsWith('USDT')) {
             const symbol = t.s.replace('USDT', '').toLowerCase();
             tickerMap.set(symbol, {
@@ -309,14 +345,11 @@ function handleLiveTickers(tickers) {
                 const isUp = newPrice > oldPrice;
                 coin.current_price = newPrice;
 
-                // Update 24h change % if available
                 if (data.openUsd > 0) {
                     coin.price_change_percentage_24h = ((data.priceUsd - data.openUsd) / data.openUsd) * 100;
                 }
 
-                // Instant UI Update: table cell
                 updateLivePriceCell(coin.id, newPrice, isUp, coin.price_change_percentage_24h);
-                // Instant UI Update: ticker
                 updateLiveTickerItem(coin.id, newPrice, isUp);
             }
         }
@@ -332,9 +365,7 @@ function updateLivePriceCell(coinId, newPrice, isUp, change24h) {
         const sym = currencySymbols[currentCurrency] || '';
         priceCell.textContent = `${sym}${formatPrice(newPrice)}`;
 
-        // Trigger instant 1s color pulse
         priceCell.classList.remove('price-flash-up', 'price-flash-down');
-        // Force reflow
         void priceCell.offsetWidth;
         priceCell.classList.add(isUp ? 'price-flash-up' : 'price-flash-down');
 
@@ -360,12 +391,12 @@ function updateLiveTickerItem(coinId, newPrice, isUp) {
             const sym = currencySymbols[currentCurrency] || '';
             priceEl.textContent = `${sym}${formatPrice(newPrice)}`;
             priceEl.style.color = isUp ? 'var(--green)' : 'var(--red)';
-            setTimeout(() => { priceEl.style.color = 'var(--text-primary)'; }, 600);
+            setTimeout(() => { priceEl.style.color = 'var(--gold)'; }, 600);
         }
     });
 }
 
-// ─── AUTOMATIC LIVE BLOG FEED (CryptoCompare Free Public News API) ───
+// ─── AUTOMATIC LIVE NEWS WIRE (CryptoCompare Free Public News API) ───
 async function fetchLiveBlog() {
     try {
         const res = await fetch(NEWS_API);
@@ -373,13 +404,13 @@ async function fetchLiveBlog() {
         const json = await res.json();
         const articles = json.Data || [];
 
-        renderBlogFeed(articles.slice(0, 15));
+        renderBlogFeed(articles.slice(0, 12));
     } catch (err) {
         console.warn('Live blog fetch error:', err);
         blogFeedGrid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align:center; padding: 40px; color: var(--text-muted);">
-                <p>Failed to load live breaking crypto news. Retrying shortly...</p>
-                <button class="btn-retry" onclick="fetchLiveBlog()">Retry Now</button>
+            <div style="grid-column: 1 / -1; text-align:center; padding: 40px; color: var(--text-muted); font-family: var(--font-mono);">
+                <p>Unable to connect to live wire dispatches. Retrying...</p>
+                <button class="btn-vintage" onclick="fetchLiveBlog()" style="margin-top:10px;">Retry Now</button>
             </div>
         `;
     }
@@ -388,38 +419,26 @@ async function fetchLiveBlog() {
 function renderBlogFeed(articles) {
     if (!articles || articles.length === 0) {
         blogFeedGrid.innerHTML = `
-            <div style="grid-column:1 / -1; text-align:center; padding:40px; color:var(--text-muted);">
-                No breaking articles right now.
+            <div style="grid-column:1 / -1; text-align:center; padding:40px; color:var(--text-muted); font-family:var(--font-mono);">
+                No dispatches available at this hour.
             </div>`;
         return;
     }
 
     blogFeedGrid.innerHTML = articles.map(item => {
         const timeAgo = formatTimeAgo(item.published_on);
-        const tags = item.tags ? item.tags.split('|').slice(0, 2) : ['CRYPTO'];
-        const fallbackImg = 'https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=600&auto=format&fit=crop&q=80';
 
         return `
-            <article class="blog-card fade-in">
-                <div class="blog-img-wrap">
-                    <img class="blog-img" src="${item.imageurl || fallbackImg}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.src='${fallbackImg}'">
-                    <span class="blog-source-badge">${escapeHtml(item.source_info?.name || 'Crypto News')}</span>
-                    <span class="blog-time-badge">${timeAgo}</span>
+            <article class="vintage-news-card fade-in">
+                <div class="news-card-meta">
+                    <span class="news-source-tag">${escapeHtml(item.source_info?.name || item.source || 'WIRE')}</span>
+                    <span>${timeAgo}</span>
                 </div>
-                <div class="blog-body">
-                    <div class="blog-tags">
-                        ${tags.map(t => `<span class="blog-tag">${escapeHtml(t)}</span>`).join('')}
-                    </div>
-                    <h4 class="blog-card-title">${escapeHtml(item.title)}</h4>
-                    <p class="blog-card-desc">${escapeHtml(item.body || '')}</p>
-                    <div class="blog-card-footer">
-                        <span style="font-size:0.75rem; color:var(--text-muted);">By ${escapeHtml(item.source || 'Breaking')}</span>
-                        <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="blog-read-btn">
-                            Read Article
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </a>
-                    </div>
-                </div>
+                <h4 class="news-card-title">${escapeHtml(item.title)}</h4>
+                <p class="news-card-body">${escapeHtml(item.body || '')}</p>
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="news-read-link">
+                    Read Full Dispatch →
+                </a>
             </article>
         `;
     }).join('');
@@ -497,8 +516,8 @@ function renderTable(coins) {
     if (filtered.length === 0 && search) {
         tableBody.innerHTML = `
             <tr>
-                <td colspan="9" style="text-align:center; padding:40px; color:var(--text-muted);">
-                    No coins found matching "<strong>${escapeHtml(search)}</strong>"
+                <td colspan="9" style="text-align:center; padding:40px; color:var(--text-muted); font-family:var(--font-mono);">
+                    No assets recorded matching "<strong>${escapeHtml(search)}</strong>"
                 </td>
             </tr>`;
         return;
@@ -508,15 +527,13 @@ function renderTable(coins) {
 
     tableBody.innerHTML = filtered.map((coin, i) => {
         return `
-        <tr class="fade-in" style="animation-delay:${Math.min(i * 15, 400)}ms" data-coin-id="${coin.id}">
+        <tr class="fade-in" style="animation-delay:${Math.min(i * 12, 350)}ms" data-coin-id="${coin.id}">
             <td class="td-rank">${coin.market_cap_rank || '-'}</td>
             <td>
                 <div class="coin-cell">
                     <img class="coin-img" src="${coin.image}" alt="${coin.name}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22><circle cx=%2220%22 cy=%2220%22 r=%2220%22 fill=%22%23333%22/><text x=%2220%22 y=%2225%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2216%22>${coin.symbol?.charAt(0)?.toUpperCase() || '?'}</text></svg>'">
-                    <div class="coin-info">
-                        <span class="coin-name">${escapeHtml(coin.name)}</span>
-                        <span class="coin-symbol">${coin.symbol}</span>
-                    </div>
+                    <span class="coin-name">${escapeHtml(coin.name)}</span>
+                    <span class="coin-symbol">${coin.symbol}</span>
                 </div>
             </td>
             <td class="price-cell">${sym}${formatPrice(coin.current_price)}</td>
@@ -536,10 +553,10 @@ function renderTable(coins) {
             if (row) {
                 const cell = row.querySelector('.sparkline-cell');
                 const canvas = document.createElement('canvas');
-                canvas.width = 120;
-                canvas.height = 40;
-                canvas.style.width = '120px';
-                canvas.style.height = '40px';
+                canvas.width = 110;
+                canvas.height = 34;
+                canvas.style.width = '110px';
+                canvas.style.height = '34px';
                 cell.innerHTML = '';
                 cell.appendChild(canvas);
                 drawSparkline(canvas, coin.sparkline_in_7d.price, coin.price_change_percentage_7d_in_currency);
@@ -562,21 +579,21 @@ function drawSparkline(canvas, prices, change) {
     const ctx = canvas.getContext('2d');
     const w = canvas.width;
     const h = canvas.height;
-    const padding = 4;
+    const padding = 3;
 
-    const step = Math.max(1, Math.floor(prices.length / 50));
+    const step = Math.max(1, Math.floor(prices.length / 45));
     const sampled = prices.filter((_, i) => i % step === 0);
 
     const min = Math.min(...sampled);
     const max = Math.max(...sampled);
     const range = max - min || 1;
 
-    const color = (change || 0) >= 0 ? '#22c55e' : '#ef4444';
+    const color = (change || 0) >= 0 ? '#22c55e' : '#f43f5e';
 
     ctx.clearRect(0, 0, w, h);
     ctx.beginPath();
     ctx.strokeStyle = color;
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1.3;
     ctx.lineJoin = 'round';
 
     sampled.forEach((price, i) => {
@@ -586,17 +603,6 @@ function drawSparkline(canvas, prices, change) {
         else ctx.lineTo(x, y);
     });
     ctx.stroke();
-
-    const lastX = padding + (w - 2 * padding);
-    ctx.lineTo(lastX, h);
-    ctx.lineTo(padding, h);
-    ctx.closePath();
-
-    const gradient = ctx.createLinearGradient(0, 0, 0, h);
-    gradient.addColorStop(0, color + '30');
-    gradient.addColorStop(1, color + '05');
-    ctx.fillStyle = gradient;
-    ctx.fill();
 }
 
 // ─── Ticker ───
@@ -606,7 +612,6 @@ function updateTicker(topCoins) {
         <div class="ticker-item" data-coin-id="${coin.id}">
             <img src="${coin.image}" alt="${coin.name}" loading="lazy">
             <span class="ticker-name">${coin.name}</span>
-            <span class="ticker-symbol">${coin.symbol}</span>
             <span class="ticker-price">${sym}${formatPrice(coin.current_price)}</span>
             <span class="ticker-change ${changeClass(coin.price_change_percentage_24h)}">${formatChange(coin.price_change_percentage_24h)}</span>
         </div>
@@ -628,50 +633,50 @@ function openModal(coin) {
 
     modalContent.innerHTML = `
         <div class="modal-header">
-            <img src="${coin.image}" alt="${coin.name}">
+            <img src="${coin.image}" alt="${coin.name}" style="width:40px;height:40px;border-radius:50%;">
             <div>
                 <div class="modal-coin-name">${escapeHtml(coin.name)}</div>
-                <div class="modal-coin-symbol">${coin.symbol} · Rank #${coin.market_cap_rank || '-'}</div>
+                <div class="modal-coin-symbol">${coin.symbol.toUpperCase()} • RANK #${coin.market_cap_rank || '-'}</div>
             </div>
         </div>
 
         <div class="modal-price">${sym}${formatPrice(coin.current_price)}</div>
-        <span class="${changeClass(coin.price_change_percentage_24h)}" style="font-size:1.1rem;">
-            ${formatChange(coin.price_change_percentage_24h)} (24h)
+        <span class="${changeClass(coin.price_change_percentage_24h)}" style="font-family:var(--font-mono);font-size:0.95rem;">
+            ${formatChange(coin.price_change_percentage_24h)} (24 Hours)
         </span>
 
         <div class="modal-stats">
             <div class="modal-stat">
-                <div class="modal-stat-label">Market Cap</div>
+                <div class="modal-stat-label">Market Capitalization</div>
                 <div class="modal-stat-value">${sym}${formatCompact(coin.market_cap)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">24h Volume</div>
+                <div class="modal-stat-label">24h Trading Volume</div>
                 <div class="modal-stat-value">${sym}${formatCompact(coin.total_volume)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">24h High</div>
+                <div class="modal-stat-label">24h High Record</div>
                 <div class="modal-stat-value">${sym}${formatPrice(coin.high_24h)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">24h Low</div>
+                <div class="modal-stat-label">24h Low Record</div>
                 <div class="modal-stat-value">${sym}${formatPrice(coin.low_24h)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">Circulating Supply</div>
+                <div class="modal-stat-label">Circulating Reserve</div>
                 <div class="modal-stat-value">${coin.circulating_supply ? formatCompact(coin.circulating_supply) : 'N/A'}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">Total Supply</div>
+                <div class="modal-stat-label">Total Reserve Ceiling</div>
                 <div class="modal-stat-value">${coin.total_supply ? formatCompact(coin.total_supply) : '∞'}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">All-Time High</div>
-                <div class="modal-stat-value">${sym}${formatPrice(coin.ath)}<br><span style="font-size:0.75rem;color:var(--text-muted)">${formatChange(coin.ath_change_percentage)} from ATH</span></div>
+                <div class="modal-stat-label">Historical Peak (ATH)</div>
+                <div class="modal-stat-value">${sym}${formatPrice(coin.ath)}</div>
             </div>
             <div class="modal-stat">
-                <div class="modal-stat-label">All-Time Low</div>
-                <div class="modal-stat-value">${sym}${formatPrice(coin.atl)}<br><span style="font-size:0.75rem;color:var(--text-muted)">${formatChange(coin.atl_change_percentage)} from ATL</span></div>
+                <div class="modal-stat-label">Historical Floor (ATL)</div>
+                <div class="modal-stat-value">${sym}${formatPrice(coin.atl)}</div>
             </div>
         </div>
     `;
