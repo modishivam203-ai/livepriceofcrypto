@@ -2,226 +2,303 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Market Analysis & News Report | LivePriceOfCrypto.com</title>
     <meta name="description" content="Detailed market intelligence, macroeconomic analysis, and cryptocurrency market impact report.">
     <link rel="canonical" href="https://livepriceofcrypto.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+    <style>
+        .article-page-wrap {
+            max-width: 1000px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+        .article-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-sm);
+        }
+        .article-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        .article-breadcrumb a {
+            color: var(--lpg-blue);
+            text-decoration: none;
+        }
+        .article-meta-badge {
+            display: inline-block;
+            background: var(--lpg-blue);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .article-title-main {
+            font-size: 26px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+        .article-author-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        .article-author-row strong {
+            color: #0f172a;
+        }
+        .article-hero-box {
+            width: 100%;
+            height: 380px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: #0f172a;
+            margin-bottom: 20px;
+        }
+        .article-hero-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .article-exec-summary {
+            background: #f0f9ff;
+            border-left: 4px solid var(--lpg-blue);
+            padding: 16px 20px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin-bottom: 24px;
+        }
+        .article-exec-summary h3 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #0369a1;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .article-exec-summary p {
+            font-size: 13.5px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .article-body-p {
+            font-size: 14.5px;
+            color: #334155;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+        .article-impact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .article-impact-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+        }
+        .article-impact-card h4 {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .article-impact-card p {
+            font-size: 12.5px;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .source-attribution-card {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+        .btn-ext-source {
+            background: var(--lpg-blue);
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 12.5px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background 0.15s;
+        }
+        .btn-ext-source:hover {
+            background: var(--lpg-blue-dark);
+        }
+        .article-bottom-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .btn-back-link {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--lpg-blue);
+            text-decoration: none;
+        }
+        @media (max-width: 640px) {
+            .article-hero-box {
+                height: 220px;
+            }
+            .article-title-main {
+                font-size: 20px;
+            }
+            .article-impact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body data-theme="gold-light">
 
-    <!-- Top Market Bar -->
-    <div class="top-market-bar">
-        <div class="container top-market-inner">
-            <div class="top-market-left">
-                <span class="market-status-dot">●</span>
-                <span class="market-status-text">LIVE MARKET INTELLIGENCE</span>
-                <span class="market-clock" id="liveClock">00:00:00 UTC</span>
-            </div>
-            <div class="top-market-right">
-                <a href="index.html" class="nav-back-link">← Return to Market Board</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Header -->
-    <header class="main-header">
-        <div class="container header-inner">
-            <div class="site-branding">
-                <a href="index.html" class="brand-link">
-                    <div class="brand-icon">LC</div>
-                    <div>
-                        <h1 class="brand-name">LivePriceOfCrypto<span class="brand-tld">.com</span></h1>
-                        <span class="brand-sub">Real-Time Cryptocurrency & Macroeconomic Market Intelligence</span>
+    <!-- Top Sky-Blue Header -->
+    <header class="lpg-top-header">
+        <div class="lpg-header-container">
+            <div class="lpg-brand-wrap">
+                <a href="index.html" class="lpg-brand-link">
+                    <div class="lpg-brand-text">
+                        <div class="lpg-brand-top">
+                            <span class="brand-live">Live</span>
+                            <svg class="brand-curve-svg" viewBox="0 0 36 18" width="32" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2 14 C10 14, 18 4, 30 2" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round"/>
+                                <path d="M24 2 L31 2 L31 9" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <h1 class="lpg-brand-title">Price of Crypto</h1>
                     </div>
                 </a>
             </div>
-            <nav class="header-nav">
-                <a href="index.html#sectionSpot" class="nav-link">Spot Rates</a>
-                <a href="index.html#sectionPrices" class="nav-link">All Assets</a>
-                <a href="index.html#sectionNews" class="nav-link active">Market News</a>
-                <a href="index.html#sectionCalendar" class="nav-link">Economic Calendar</a>
-            </nav>
+            <div>
+                <a href="index.html" style="color:#ffffff; font-weight:700; font-size:13px; text-decoration:none; background:rgba(0,0,0,0.2); padding:6px 14px; border-radius:4px; border:1px solid rgba(255,255,255,0.3);">
+                    ← Return to Live Market Board
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- Main Article Body -->
-    <main class="container article-container">
-        
+    <!-- Navigation Bar -->
+    <nav class="lpg-nav-bar">
+        <div class="lpg-nav-container">
+            <a href="index.html" class="nav-tab">Live Crypto Price</a>
+            <a href="index.html#sectionCalculator" class="nav-tab">🧮 Crypto Calculator</a>
+            <a href="index.html" class="nav-tab">Bitcoin Spot</a>
+            <a href="index.html#worldwideSidebar" class="nav-tab"><span class="badge-live-tab">live</span> Exchange Rate</a>
+            <a href="index.html#sectionNews" class="nav-tab active">📰 Market News</a>
+            <a href="index.html#sectionCalendar" class="nav-tab">📅 Economic Calendar</a>
+        </div>
+    </nav>
+
+    <!-- Main Article Wrap -->
+    <main class="article-page-wrap">
         <div class="article-breadcrumb">
             <a href="index.html">Home</a> <span>›</span>
-            <a href="index.html#sectionNews">Market News & Macro Intelligence</a> <span>›</span>
-            <span id="breadcrumbTitle">Market Report</span>
+            <a href="index.html#sectionNews">Macro & Market News</a> <span>›</span>
+            <span id="breadcrumbTitle">Analysis</span>
         </div>
 
-        <div class="article-layout">
-            <!-- Article Content Column -->
-            <article class="article-main" id="articleMain">
-                
-                <!-- Category & Time -->
-                <div class="article-meta-header">
-                    <span class="article-category-badge" id="articleCategory">MACRO & CRYPTO IMPACT</span>
-                    <span class="article-date" id="articleDate">Loading report...</span>
-                    <span class="article-readtime" id="articleReadTime">3 min read</span>
+        <div class="article-card">
+            <span class="article-meta-badge">MARKET INTELLIGENCE</span>
+            <h1 class="article-title-main" id="articleHeadline">Loading Market Analysis...</h1>
+
+            <div class="article-author-row">
+                <span>By <strong id="articleSource">Financial Press</strong></span>
+                <span>•</span>
+                <span id="articleDate">Recently Published</span>
+                <span>•</span>
+                <span>3 min read</span>
+            </div>
+
+            <div class="article-hero-box">
+                <img id="articleImage" src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=1200&auto=format&fit=crop&q=80" alt="News Image">
+            </div>
+
+            <div class="article-exec-summary">
+                <h3>Executive Brief & Market Implications</h3>
+                <p id="articleSummary">Analyzing macroeconomic policy shifts, inflation prints, and central bank liquidity trends impacting cryptocurrency and risk assets worldwide.</p>
+            </div>
+
+            <div class="article-body-p" id="articleContent">
+                Financial market conditions continue to reflect evolving macroeconomic dynamics. Key central bank interest rate decisions, sovereign bond yield curves, and foreign exchange valuations are directly correlating with institutional capital flows into digital assets including Bitcoin, Ethereum, and major altcoins.
+            </div>
+
+            <div class="article-impact-grid">
+                <div class="article-impact-card">
+                    <h4>Institutional Liquidity Inflows</h4>
+                    <p>Cross-border regulatory clarity and hedge against currency devaluation continue to attract corporate treasury allocations and spot ETF capital.</p>
                 </div>
-
-                <!-- Headline -->
-                <h1 class="article-headline" id="articleHeadline">Loading Market Analysis...</h1>
-
-                <!-- Source & Author -->
-                <div class="article-author-bar">
-                    <div class="author-avatar">📊</div>
-                    <div>
-                        <div class="author-name" id="articleSource">Global Financial Wire</div>
-                        <div class="author-title">Syndicated Market Intelligence Report</div>
-                    </div>
+                <div class="article-impact-card">
+                    <h4>Central Bank Policy & Volatility</h4>
+                    <p>Federal Reserve policy meetings and treasury yields influence broader risk appetite, affecting leverage and spot price discovery.</p>
                 </div>
+            </div>
 
-                <!-- Featured Image -->
-                <div class="article-hero-wrap">
-                    <img id="articleImage" src="https://images.unsplash.com/photo-1621416894569-0f39ed31d247?w=1200&auto=format&fit=crop&q=80" alt="Market News Hero" class="article-hero-img">
-                    <div class="article-hero-caption" id="articleCaption">Macro factors influencing cryptocurrency liquidity and digital asset valuations</div>
+            <div class="source-attribution-card">
+                <div>
+                    <strong style="color:#0f172a; font-size:13px;">Original Dispatch Source:</strong>
+                    <div id="sourceDomainText" style="font-size:12px; color:var(--text-muted); margin-top:2px;">Global Financial Press</div>
                 </div>
+                <a href="#" target="_blank" rel="noopener noreferrer" class="btn-ext-source" id="originalSourceLink">
+                    View Original Source Publication →
+                </a>
+            </div>
 
-                <!-- Executive Summary Box -->
-                <div class="executive-summary-box">
-                    <div class="summary-header">
-                        <span class="summary-icon">⚡</span>
-                        <h3>Executive Brief & Market Impact Summary</h3>
-                    </div>
-                    <p id="articleSummary">Evaluating macroeconomic policy shifts, inflation prints, and central bank liquidity trends impacting cryptocurrency and risk assets worldwide.</p>
-                </div>
-
-                <!-- Story Body -->
-                <div class="article-body-content" id="articleContent">
-                    <p>Financial market conditions continue to reflect evolving macroeconomic dynamics. Key central bank interest rate decisions, bond yields, and foreign exchange valuations are directly correlating with institutional capital flows into digital assets including Bitcoin, Ethereum, and major altcoins.</p>
-                </div>
-
-                <!-- Market Impact Breakdown Section (Added Content) -->
-                <div class="market-impact-section">
-                    <h3 class="impact-title">Cryptocurrency Market Implications</h3>
-                    <div class="impact-grid">
-                        <div class="impact-card">
-                            <div class="impact-card-head">
-                                <span class="impact-badge bullish">BULLISH DRIVER</span>
-                                <h4>Institutional Inflows</h4>
-                            </div>
-                            <p>Global regulatory clarity and hedge against currency devaluation continue to attract corporate treasury allocations and spot ETF capital.</p>
-                        </div>
-                        <div class="impact-card">
-                            <div class="impact-card-head">
-                                <span class="impact-badge neutral">VOLATILITY FACTOR</span>
-                                <h4>Macro Interest Rates</h4>
-                            </div>
-                            <p>Federal Reserve policy meetings and treasury yields influence broader risk appetite, affecting leverage and short-term price discovery.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Key Takeaways (Added Value) -->
-                <div class="key-takeaways-card">
-                    <h4>Key Takeaways for Investors</h4>
-                    <ul class="takeaways-list" id="takeawaysList">
-                        <li>Global liquidity trends and currency fluctuations remain the primary catalyst for cryptocurrency valuations.</li>
-                        <li>Traders are monitoring support and resistance zones across Bitcoin ($73,000 - $76,000) and Ethereum ($2,700 - $2,950).</li>
-                        <li>Upcoming macroeconomic releases and central bank guidance will determine weekly volatility profiles.</li>
-                    </ul>
-                </div>
-
-                <!-- External Source Citation Link -->
-                <div class="source-attribution-card">
-                    <div class="source-info">
-                        <strong>Original Source Dispatch:</strong>
-                        <span id="sourceDomainText">Global Financial Press</span>
-                    </div>
-                    <a href="#" target="_blank" rel="noopener noreferrer" class="btn-external-source" id="originalSourceLink">
-                        View Original Source Publication →
-                    </a>
-                </div>
-
-                <!-- Navigation Bottom -->
-                <div class="article-bottom-nav">
-                    <a href="index.html#sectionNews" class="btn-back-news">← Back to All News Reports</a>
-                    <a href="index.html#sectionPrices" class="btn-view-prices">View Live Market Board →</a>
-                </div>
-
-            </article>
-
-            <!-- Sidebar Column -->
-            <aside class="article-sidebar">
-                <div class="sidebar-widget">
-                    <div class="widget-head">
-                        <h4>Spot Crypto Rates</h4>
-                        <span class="live-dot pulse"></span>
-                    </div>
-                    <div class="sidebar-spot-list" id="sidebarSpotList">
-                        <!-- Populated by script -->
-                        <div class="sidebar-spot-row">
-                            <span>Bitcoin (BTC)</span>
-                            <strong id="side-btc">$74,850</strong>
-                        </div>
-                        <div class="sidebar-spot-row">
-                            <span>Ethereum (ETH)</span>
-                            <strong id="side-eth">$2,845</strong>
-                        </div>
-                        <div class="sidebar-spot-row">
-                            <span>Solana (SOL)</span>
-                            <strong id="side-sol">$188.50</strong>
-                        </div>
-                        <div class="sidebar-spot-row">
-                            <span>BNB</span>
-                            <strong id="side-bnb">$595.20</strong>
-                        </div>
-                        <div class="sidebar-spot-row">
-                            <span>XRP</span>
-                            <strong id="side-xrp">$0.584</strong>
-                        </div>
-                    </div>
-                    <a href="index.html#sectionPrices" class="sidebar-view-all">View All 100 Assets →</a>
-                </div>
-
-                <div class="sidebar-widget">
-                    <div class="widget-head">
-                        <h4>Economic Calendar</h4>
-                    </div>
-                    <p class="sidebar-text">Check daily interest rate announcements, CPI inflation data, and labor reports impacting crypto.</p>
-                    <a href="index.html#sectionCalendar" class="sidebar-btn-cal">Open Economic Calendar →</a>
-                </div>
-            </aside>
+            <div class="article-bottom-actions">
+                <a href="index.html#sectionNews" class="btn-back-link">← Back to All News Reports</a>
+                <a href="index.html" class="btn-back-link">View Live Spot Board →</a>
+            </div>
         </div>
-
     </main>
 
     <!-- Footer -->
-    <footer class="main-footer">
+    <footer class="lpg-footer">
         <div class="container footer-inner">
-            <div>
+            <div class="footer-info">
                 <h4 class="footer-brand">LivePriceOfCrypto.com</h4>
-                <p>The Comprehensive Cryptocurrency & Financial Market Intelligence Platform.</p>
+                <p>Independent real-time cryptocurrency valuation index, spot benchmark rates, interactive charts, and macroeconomic intelligence.</p>
             </div>
             <div class="footer-meta">
-                <p>Real-Time Market Data • Institutional Grade</p>
-                <p class="footer-disclaimer">Informational purposes only. Not financial advice.</p>
+                <p>Spot Broadcast: <strong style="color:#059669">● Connected</strong></p>
+                <p class="footer-disclaimer">Disclaimer: All rates and market data provided for informational purposes only. Not financial advice.</p>
             </div>
         </div>
     </footer>
 
-    <script src="script.js"></script>
     <script>
-        // Article Reader Script
         document.addEventListener('DOMContentLoaded', () => {
-            loadArticleDetails();
-        });
-
-        function loadArticleDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const articleId = urlParams.get('id');
 
-            // Retrieve stored articles from localStorage
             let storedArticles = [];
             try {
                 storedArticles = JSON.parse(localStorage.getItem('cached_crypto_news') || '[]');
@@ -248,17 +325,17 @@
                 const sourceDomain = document.getElementById('sourceDomainText');
 
                 if (headline) headline.textContent = article.title;
-                if (breadcrumb) breadcrumb.textContent = article.title.slice(0, 40) + '...';
+                if (breadcrumb) breadcrumb.textContent = article.title.slice(0, 35) + '...';
                 if (source) source.textContent = article.source || 'Financial Market Wire';
-                if (sourceDomain) sourceDomain.textContent = article.source || 'News Source';
+                if (sourceDomain) sourceDomain.textContent = article.source || 'Financial Press';
                 if (date) date.textContent = article.pubDate || 'Today';
                 if (img && article.image) img.src = article.image;
                 if (summary) summary.textContent = article.snippet || article.title;
 
                 if (content && article.snippet) {
                     content.innerHTML = `
-                        <p class="article-lead">${article.snippet}</p>
-                        <p>Market analysts observe that macroeconomic policy shifts, international interest rate expectations, and treasury yield variations continue to serve as leading drivers of capital allocation into Bitcoin and the broader cryptocurrency complex.</p>
+                        <p style="font-weight:600; color:#0f172a; margin-bottom:12px;">${article.snippet}</p>
+                        <p style="margin-bottom:12px;">Market analysts observe that macroeconomic policy shifts, international interest rate expectations, and sovereign debt yield variations continue to serve as leading drivers of capital allocation into Bitcoin and the broader cryptocurrency asset class.</p>
                         <p>Institutional desks and retail participants alike are monitoring key market liquidity metrics, order book depth, and central bank statements to gauge the trajectory of digital asset valuations over the forthcoming quarterly cycle.</p>
                     `;
                 }
@@ -267,7 +344,7 @@
                     origLink.href = article.link;
                 }
             }
-        }
+        });
     </script>
 </body>
 </html>
