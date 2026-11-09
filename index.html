@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Price of Crypto | Real-Time Cryptocurrency Prices</title>
+    <meta name="description" content="Track live cryptocurrency prices, market cap, volume, and 24h changes. Real-time data for Bitcoin, Ethereum, and 100+ altcoins.">
+    <meta name="keywords" content="crypto prices, live crypto, bitcoin price, ethereum price, cryptocurrency tracker, real-time crypto prices">
+    <meta property="og:title" content="Live Price of Crypto | Real-Time Cryptocurrency Prices">
+    <meta property="og:description" content="Track live cryptocurrency prices with real-time updates. Bitcoin, Ethereum, and 100+ altcoins.">
+    <meta property="og:url" content="https://livepriceofcrypto.com">
+    <meta property="og:type" content="website">
+    <link rel="canonical" href="https://livepriceofcrypto.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>₿</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <circle cx="16" cy="16" r="16" fill="url(#logoGrad)"/>
+                            <path d="M16 6L20 13H12L16 6Z" fill="white" opacity="0.9"/>
+                            <path d="M16 26L12 19H20L16 26Z" fill="white" opacity="0.7"/>
+                            <path d="M6 16L13 12V20L6 16Z" fill="white" opacity="0.8"/>
+                            <path d="M26 16L19 20V12L26 16Z" fill="white" opacity="0.6"/>
+                            <defs>
+                                <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32">
+                                    <stop stop-color="#6366f1"/>
+                                    <stop offset="1" stop-color="#a855f7"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="logo-text">LivePriceOfCrypto</h1>
+                        <p class="logo-sub">.com</p>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="global-stats" id="globalStats">
+                        <div class="stat-pill">
+                            <span class="stat-label">Cryptos:</span>
+                            <span class="stat-value" id="totalCryptos">--</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-label">Market Cap:</span>
+                            <span class="stat-value" id="totalMarketCap">--</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-label">24h Vol:</span>
+                            <span class="stat-value" id="totalVolume">--</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-label">BTC Dom:</span>
+                            <span class="stat-value" id="btcDominance">--</span>
+                        </div>
+                    </div>
+                    <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                        <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                        <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2 class="hero-title">Track <span class="gradient-text">Crypto Prices</span> in Real-Time</h2>
+                <p class="hero-subtitle">Live prices, market cap, volume & trends for 100+ cryptocurrencies. Updated every 60 seconds.</p>
+            </div>
+            <!-- Top Coins Ticker -->
+            <div class="ticker-wrap" id="tickerWrap">
+                <div class="ticker" id="ticker"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Controls -->
+            <div class="controls">
+                <div class="search-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    <input type="text" id="searchInput" placeholder="Search coins... (e.g. Bitcoin, ETH)" autocomplete="off">
+                </div>
+                <div class="controls-right">
+                    <select id="currencySelect" class="select-input">
+                        <option value="usd">USD ($)</option>
+                        <option value="eur">EUR (€)</option>
+                        <option value="inr">INR (₹)</option>
+                        <option value="gbp">GBP (£)</option>
+                        <option value="jpy">JPY (¥)</option>
+                        <option value="btc">BTC (₿)</option>
+                    </select>
+                    <select id="perPageSelect" class="select-input">
+                        <option value="50">50 coins</option>
+                        <option value="100" selected>100 coins</option>
+                        <option value="250">250 coins</option>
+                    </select>
+                    <div class="auto-refresh">
+                        <div class="refresh-indicator" id="refreshIndicator">
+                            <svg class="refresh-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                            <span id="refreshTimer">60s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Table -->
+            <div class="table-container">
+                <table class="price-table" id="priceTable">
+                    <thead>
+                        <tr>
+                            <th class="th-rank sortable" data-sort="market_cap_rank">#</th>
+                            <th class="th-coin sortable" data-sort="name">Coin</th>
+                            <th class="th-price sortable" data-sort="current_price">Price</th>
+                            <th class="th-change sortable" data-sort="price_change_percentage_1h_in_currency">1h %</th>
+                            <th class="th-change sortable" data-sort="price_change_percentage_24h">24h %</th>
+                            <th class="th-change sortable" data-sort="price_change_percentage_7d_in_currency">7d %</th>
+                            <th class="th-volume sortable" data-sort="total_volume">24h Volume</th>
+                            <th class="th-mcap sortable" data-sort="market_cap">Market Cap</th>
+                            <th class="th-sparkline">Last 7 Days</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Loading live prices...</p>
+            </div>
+
+            <!-- Error State -->
+            <div class="error-state" id="errorState" style="display:none;">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                <p>Unable to fetch prices. Retrying...</p>
+                <button class="btn-retry" onclick="fetchData()">Retry Now</button>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination" style="display:none;">
+                <button class="btn-page" id="prevPage" disabled>← Previous</button>
+                <span class="page-info" id="pageInfo">Page 1</span>
+                <button class="btn-page" id="nextPage">Next →</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Coin Detail Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal" id="coinModal">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-content" id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <p class="footer-brand">LivePriceOfCrypto.com</p>
+                    <p class="footer-desc">Free real-time cryptocurrency price tracker. Data provided by CoinGecko API.</p>
+                </div>
+                <div class="footer-right">
+                    <p>Last updated: <span id="lastUpdated">--</span></p>
+                    <p class="footer-disclaimer">Disclaimer: This is for informational purposes only. Not financial advice.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" title="Back to top">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 15l-6-6-6 6"/></svg>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>
