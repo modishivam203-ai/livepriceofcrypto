@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Price of Crypto | Real-Time Cryptocurrency Prices</title>
-    <meta name="description" content="Track live cryptocurrency prices, market cap, volume, and 24h changes. Real-time data for Bitcoin, Ethereum, and 100+ altcoins.">
-    <meta name="keywords" content="crypto prices, live crypto, bitcoin price, ethereum price, cryptocurrency tracker, real-time crypto prices">
-    <meta property="og:title" content="Live Price of Crypto | Real-Time Cryptocurrency Prices">
-    <meta property="og:description" content="Track live cryptocurrency prices with real-time updates. Bitcoin, Ethereum, and 100+ altcoins.">
+    <title>Live Price of Crypto | Real-Time Cryptocurrency Prices & Live Blog</title>
+    <meta name="description" content="Track live cryptocurrency prices updated every second with WebSocket, real-time market cap, 24h volume, and auto-updating live crypto blog news.">
+    <meta name="keywords" content="crypto prices, live crypto, real-time crypto prices, crypto live blog, bitcoin price 1 second update">
+    <meta property="og:title" content="Live Price of Crypto | Real-Time Cryptocurrency Prices & Live Blog">
+    <meta property="og:description" content="Real-time 1-second cryptocurrency price updates via WebSocket and automatic live breaking news blog.">
     <meta property="og:url" content="https://livepriceofcrypto.com">
     <meta property="og:type" content="website">
     <link rel="canonical" href="https://livepriceofcrypto.com">
@@ -43,7 +43,13 @@
                         <p class="logo-sub">.com</p>
                     </div>
                 </div>
+
                 <div class="header-right">
+                    <div class="live-status-badge" id="wsStatusBadge" title="Live WebSocket connection for second-by-second updates">
+                        <span class="live-dot pulse"></span>
+                        <span id="wsStatusText">Live Feed (1s)</span>
+                    </div>
+
                     <div class="global-stats" id="globalStats">
                         <div class="stat-pill">
                             <span class="stat-label">Cryptos:</span>
@@ -62,6 +68,7 @@
                             <span class="stat-value" id="btcDominance">--</span>
                         </div>
                     </div>
+
                     <button class="theme-toggle" id="themeToggle" title="Toggle theme">
                         <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
                         <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
@@ -71,12 +78,29 @@
         </div>
     </header>
 
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs-wrapper">
+        <div class="container">
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="pricesTab">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    Live Prices (1s Stream)
+                </button>
+                <button class="nav-tab" data-tab="blogTab">
+                    <span class="live-dot-mini pulse"></span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10l6 6v8a2 2 0 0 1-2 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Automatic Live Blog
+                </button>
+            </div>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h2 class="hero-title">Track <span class="gradient-text">Crypto Prices</span> in Real-Time</h2>
-                <p class="hero-subtitle">Live prices, market cap, volume & trends for 100+ cryptocurrencies. Updated every 60 seconds.</p>
+                <h2 class="hero-title">Track <span class="gradient-text">Live Crypto</span> Every Second</h2>
+                <p class="hero-subtitle">Instant 1-second price updates via real-time WebSocket & automated live breaking news blog.</p>
             </div>
             <!-- Top Coins Ticker -->
             <div class="ticker-wrap" id="tickerWrap">
@@ -88,75 +112,106 @@
     <!-- Main Content -->
     <main class="main">
         <div class="container">
-            <!-- Controls -->
-            <div class="controls">
-                <div class="search-box">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-                    <input type="text" id="searchInput" placeholder="Search coins... (e.g. Bitcoin, ETH)" autocomplete="off">
-                </div>
-                <div class="controls-right">
-                    <select id="currencySelect" class="select-input">
-                        <option value="usd">USD ($)</option>
-                        <option value="eur">EUR (€)</option>
-                        <option value="inr">INR (₹)</option>
-                        <option value="gbp">GBP (£)</option>
-                        <option value="jpy">JPY (¥)</option>
-                        <option value="btc">BTC (₿)</option>
-                    </select>
-                    <select id="perPageSelect" class="select-input">
-                        <option value="50">50 coins</option>
-                        <option value="100" selected>100 coins</option>
-                        <option value="250">250 coins</option>
-                    </select>
-                    <div class="auto-refresh">
-                        <div class="refresh-indicator" id="refreshIndicator">
-                            <svg class="refresh-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-                            <span id="refreshTimer">60s</span>
+
+            <!-- TAB 1: PRICES -->
+            <div class="tab-view active" id="pricesTab">
+                <!-- Controls -->
+                <div class="controls">
+                    <div class="search-box">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                        <input type="text" id="searchInput" placeholder="Search coins... (e.g. Bitcoin, ETH, SOL)" autocomplete="off">
+                    </div>
+                    <div class="controls-right">
+                        <select id="currencySelect" class="select-input">
+                            <option value="usd">USD ($)</option>
+                            <option value="inr">INR (₹)</option>
+                            <option value="eur">EUR (€)</option>
+                            <option value="gbp">GBP (£)</option>
+                            <option value="jpy">JPY (¥)</option>
+                            <option value="btc">BTC (₿)</option>
+                        </select>
+                        <select id="perPageSelect" class="select-input">
+                            <option value="50">50 coins</option>
+                            <option value="100" selected>100 coins</option>
+                            <option value="250">250 coins</option>
+                        </select>
+                        <div class="auto-refresh">
+                            <div class="refresh-indicator" id="refreshIndicator" title="WebSocket is streaming live every 1 second">
+                                <span class="live-dot pulse"></span>
+                                <span id="streamLabel">1s Live Stream</span>
+                            </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Price Table -->
+                <div class="table-container">
+                    <table class="price-table" id="priceTable">
+                        <thead>
+                            <tr>
+                                <th class="th-rank sortable" data-sort="market_cap_rank">#</th>
+                                <th class="th-coin sortable" data-sort="name">Coin</th>
+                                <th class="th-price sortable" data-sort="current_price">Price (Live 1s)</th>
+                                <th class="th-change sortable" data-sort="price_change_percentage_1h_in_currency">1h %</th>
+                                <th class="th-change sortable" data-sort="price_change_percentage_24h">24h %</th>
+                                <th class="th-change sortable" data-sort="price_change_percentage_7d_in_currency">7d %</th>
+                                <th class="th-volume sortable" data-sort="total_volume">24h Volume</th>
+                                <th class="th-mcap sortable" data-sort="market_cap">Market Cap</th>
+                                <th class="th-sparkline">Last 7 Days</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Connecting to real-time crypto stream...</p>
+                </div>
+
+                <!-- Error State -->
+                <div class="error-state" id="errorState" style="display:none;">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                    <p>Unable to fetch prices. Retrying...</p>
+                    <button class="btn-retry" onclick="fetchData()">Retry Now</button>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination" style="display:none;">
+                    <button class="btn-page" id="prevPage" disabled>← Previous</button>
+                    <span class="page-info" id="pageInfo">Page 1</span>
+                    <button class="btn-page" id="nextPage">Next →</button>
+                </div>
+            </div>
+
+            <!-- TAB 2: AUTOMATIC LIVE BLOG -->
+            <div class="tab-view" id="blogTab">
+                <div class="blog-header-box">
+                    <div class="blog-title-wrap">
+                        <span class="badge-live-pulse"><span class="live-dot pulse"></span> LIVE STREAMING</span>
+                        <h3>Crypto Live Blog & Breaking News</h3>
+                        <p>Automatic real-time news articles, market analysis, and breaking crypto updates fetched every 60 seconds.</p>
+                    </div>
+                    <div class="blog-actions">
+                        <span class="blog-timer-badge">Auto-updates: <strong id="blogTimer">60s</strong></span>
+                        <button class="btn-refresh-blog" id="btnRefreshBlog">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                            Refresh Feed
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Blog Feed Grid -->
+                <div class="blog-feed-grid" id="blogFeedGrid">
+                    <div class="loading" style="grid-column: 1 / -1;">
+                        <div class="spinner"></div>
+                        <p>Loading automatic live blog posts...</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Price Table -->
-            <div class="table-container">
-                <table class="price-table" id="priceTable">
-                    <thead>
-                        <tr>
-                            <th class="th-rank sortable" data-sort="market_cap_rank">#</th>
-                            <th class="th-coin sortable" data-sort="name">Coin</th>
-                            <th class="th-price sortable" data-sort="current_price">Price</th>
-                            <th class="th-change sortable" data-sort="price_change_percentage_1h_in_currency">1h %</th>
-                            <th class="th-change sortable" data-sort="price_change_percentage_24h">24h %</th>
-                            <th class="th-change sortable" data-sort="price_change_percentage_7d_in_currency">7d %</th>
-                            <th class="th-volume sortable" data-sort="total_volume">24h Volume</th>
-                            <th class="th-mcap sortable" data-sort="market_cap">Market Cap</th>
-                            <th class="th-sparkline">Last 7 Days</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Loading State -->
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Loading live prices...</p>
-            </div>
-
-            <!-- Error State -->
-            <div class="error-state" id="errorState" style="display:none;">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-                <p>Unable to fetch prices. Retrying...</p>
-                <button class="btn-retry" onclick="fetchData()">Retry Now</button>
-            </div>
-
-            <!-- Pagination -->
-            <div class="pagination" id="pagination" style="display:none;">
-                <button class="btn-page" id="prevPage" disabled>← Previous</button>
-                <span class="page-info" id="pageInfo">Page 1</span>
-                <button class="btn-page" id="nextPage">Next →</button>
-            </div>
         </div>
     </main>
 
@@ -174,11 +229,12 @@
             <div class="footer-content">
                 <div class="footer-left">
                     <p class="footer-brand">LivePriceOfCrypto.com</p>
-                    <p class="footer-desc">Free real-time cryptocurrency price tracker. Data provided by CoinGecko API.</p>
+                    <p class="footer-desc">Real-time 1s streaming crypto prices via WebSocket & automated live blog. Powered by free public crypto APIs.</p>
                 </div>
                 <div class="footer-right">
-                    <p>Last updated: <span id="lastUpdated">--</span></p>
-                    <p class="footer-disclaimer">Disclaimer: This is for informational purposes only. Not financial advice.</p>
+                    <p>Live Stream: <span class="stream-badge-footer">🟢 Connected</span></p>
+                    <p>Last full sync: <span id="lastUpdated">--</span></p>
+                    <p class="footer-disclaimer">Disclaimer: For informational purposes only. Not financial advice.</p>
                 </div>
             </div>
         </div>
